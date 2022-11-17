@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 public class MarioPlayerController : MonoBehaviour
 {
+    [Header("Character Parameters")]
     public Camera m_Camera;
     public float m_LerpRotation = 0.85f;
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
+    public static MarioPlayerController instance;
     [Header("Jump")]
-    public float m_VerticalSpeed;
-    public bool m_OnGround = true;
-    public float m_JumpSpeed = 5.0f;
+    public float m_VerticalSpeed = 0.0f;
+    bool m_OnGround = true; 
+    public float m_JumpSpeed = 10.0f;
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public float m_AirTime;
 
@@ -24,7 +26,7 @@ public class MarioPlayerController : MonoBehaviour
     }
     void Start()
     {
-        
+        instance = this;
     }
 
     // Update is called once per frame
@@ -86,15 +88,14 @@ public class MarioPlayerController : MonoBehaviour
         }
         m_characterController.Move(l_Movement);
 
-        m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
-        l_Movement.y = m_VerticalSpeed * Time.deltaTime;
-
         if (Input.GetKeyDown(m_JumpKeyCode) && m_AirTime < 0.1f)
         {
             m_VerticalSpeed = m_JumpSpeed;
-            m_Animator.SetTrigger("Jump");
+            m_Animator.SetBool("Jump", true);
         }
-            
+        
+        m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
+        l_Movement.y = m_VerticalSpeed * Time.deltaTime;
 
         CollisionFlags l_CollisionFlags = m_characterController.Move(l_Movement);
         if ((l_CollisionFlags & CollisionFlags.Above) != 0 && m_VerticalSpeed > 0.0f)
@@ -104,11 +105,27 @@ public class MarioPlayerController : MonoBehaviour
             m_VerticalSpeed = 0.0f;
             m_OnGround = true;
             m_AirTime = 0;
+            m_Animator.SetBool("Falling", false);
+            m_Animator.SetBool("Jump", false);
         }
         else
         {
             m_AirTime += Time.deltaTime;
             m_OnGround = false;
         }
+
+        if(m_VerticalSpeed < 0)
+        {
+            m_Animator.SetBool("Falling", true);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DeadZone"))
+        {
+            PlayerLife.instance.currentLife = 0;
+        }
+
     }
 }

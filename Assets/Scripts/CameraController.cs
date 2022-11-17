@@ -2,6 +2,7 @@
 
 public class CameraController : MonoBehaviour
 {
+    [Header("Camera Parameters")]
     public Transform m_LookAtTransform;
     public float m_MinxDistance = 5.0f;
     public float m_MaxDistance = 15.0f;
@@ -10,6 +11,7 @@ public class CameraController : MonoBehaviour
     public float m_Pitch = 0.0f;
     public float m_MinPitch = -60.0f;
     public float m_MaxPitch = 20.0f;
+    public static CameraController instance;
     [Header("Avoid Obstacles")]
     public LayerMask m_AvoidObjectsMask;
     public float m_AvoidObjectOffset = 0.1f;
@@ -22,6 +24,7 @@ public class CameraController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         m_MouseLocked = Cursor.lockState == CursorLockMode.Locked;
+        instance = this;
     }
 #if UNITY_EDITOR
     void UpadteInputDebug()
