@@ -11,6 +11,7 @@ public class CameraController : MonoBehaviour
     public float m_Pitch = 0.0f;
     public float m_MinPitch = -60.0f;
     public float m_MaxPitch = 20.0f;
+    public bool m_playedOnce = false;
     public static CameraController instance;
     [Header("Avoid Obstacles")]
     public LayerMask m_AvoidObjectsMask;
@@ -67,8 +68,7 @@ public class CameraController : MonoBehaviour
         Vector3 l_ForwardCamera = new Vector3(Mathf.Sin(l_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad),
             Mathf.Sin(m_Pitch * Mathf.Deg2Rad), Mathf.Cos(l_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad));
         Vector3 l_DesirePosition = m_LookAtTransform.position - l_ForwardCamera * l_Distance;
-
-
+        
         Ray l_Ray = new Ray(m_LookAtTransform.position, -l_ForwardCamera);
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray,out l_RaycastHit,l_Distance,m_AvoidObjectsMask.value))
@@ -76,9 +76,23 @@ public class CameraController : MonoBehaviour
             l_DesirePosition = l_RaycastHit.point + l_ForwardCamera * m_AvoidObjectOffset;
         }
 
-
         transform.position = l_DesirePosition;
         transform.LookAt(m_LookAtTransform);
+
+        float l_DistanceforSound = Vector3.Distance(transform.position, m_LookAtTransform.position);
+
+        if (l_DistanceforSound < 0.55 && !m_playedOnce)
+        {
+            AudioController.instance.PlayOneShot(AudioController.instance.madremiaCR7);
+            m_playedOnce = true;
+
+        }
+
+        if (l_DistanceforSound > 4.55)
+        {
+            m_playedOnce = false;
+        }
+
 
     }
 }
