@@ -9,6 +9,7 @@ public class MarioPlayerController : MonoBehaviour
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
     public static MarioPlayerController instance;
+    public bool m_playerIsMoving = false;
     [Header("Jump")]
     public float m_VerticalSpeed = 0.0f;
     bool m_OnGround = true; 
@@ -82,6 +83,7 @@ public class MarioPlayerController : MonoBehaviour
         }
         m_Animator.SetFloat("Speed", l_Speed);
         l_Movement = l_Movement * l_MovementSpeed * Time.deltaTime;
+        
         if (Input.GetMouseButtonDown(0))
         {
             m_Animator.SetTrigger("Punch");
@@ -92,6 +94,7 @@ public class MarioPlayerController : MonoBehaviour
         {
             m_VerticalSpeed = m_JumpSpeed;
             m_Animator.SetBool("Jump", true);
+            l_HasMoved = true;
         }
         
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
@@ -117,7 +120,14 @@ public class MarioPlayerController : MonoBehaviour
         if(m_VerticalSpeed < 0)
         {
             m_Animator.SetBool("Falling", true);
+            l_HasMoved = true;
         }
+
+        if(m_VerticalSpeed > 0)
+        {
+            l_HasMoved = true;
+        }
+        m_playerIsMoving = l_HasMoved;
     }
 
     private void OnTriggerEnter(Collider other)

@@ -3,6 +3,7 @@
 public class CameraController : MonoBehaviour
 {
     [Header("Camera Parameters")]
+    public float m_TimeToComeback;
     public Transform m_LookAtTransform;
     public float m_MinxDistance = 5.0f;
     public float m_MaxDistance = 15.0f;
@@ -44,11 +45,15 @@ public class CameraController : MonoBehaviour
 #endif
     private void LateUpdate()
     {
+        
 #if UNITY_EDITOR
         UpadteInputDebug();
 #endif
         float l_MouseX = Input.GetAxis("Mouse X");
         float l_MouseY = Input.GetAxis("Mouse Y");
+        float lastMouseX = l_MouseX;
+        float lastMouseY = l_MouseY;
+        //Debug.Log(l_MouseX);
 #if UNITY_EDITOR
         if (m_AngleLocked)
         {
@@ -76,9 +81,6 @@ public class CameraController : MonoBehaviour
             l_DesirePosition = l_RaycastHit.point + l_ForwardCamera * m_AvoidObjectOffset;
         }
 
-        transform.position = l_DesirePosition;
-        transform.LookAt(m_LookAtTransform);
-
         float l_DistanceforSound = Vector3.Distance(transform.position, m_LookAtTransform.position);
 
         if (l_DistanceforSound < 0.55 && !m_playedOnce)
@@ -93,6 +95,35 @@ public class CameraController : MonoBehaviour
             m_playedOnce = false;
         }
 
+        if(transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == lastMouseX && l_MouseY == lastMouseY && !MarioPlayerController.instance.m_playerIsMoving)
+        {
+            m_TimeToComeback += Time.deltaTime;
+            Vector3 l_StartForward = l_ForwardCamera;
+            if(m_TimeToComeback > 25)
+            {
+                l_DesirePosition = m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * (l_Distance * 1.2f);
+                transform.position = Vector3.Lerp(transform.position, l_DesirePosition,120);
+                m_TimeToComeback = 0;
+                /*if(l_DesirePosition == m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * l_Distance && m_TimeToComeback > 26)
+                {
+                    //m_TimeToComeback = 0;
+                    l_DesirePosition = m_LookAtTransform.position - l_ForwardCamera * l_Distance;
+                }*/
+            }
+        }
+
+        transform.position = l_DesirePosition;
+        transform.LookAt(m_LookAtTransform);
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        {
+
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        {
+
+        }
 
     }
+
+    
 }
