@@ -16,6 +16,7 @@ public class MarioPlayerController : MonoBehaviour
     public float m_JumpSpeed = 10.0f;
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public float m_AirTime;
+    public bool m_firstJump = false;
 
     CharacterController m_characterController;
     Animator m_Animator;
@@ -95,8 +96,16 @@ public class MarioPlayerController : MonoBehaviour
             m_VerticalSpeed = m_JumpSpeed;
             m_Animator.SetBool("Jump", true);
             l_HasMoved = true;
+            m_firstJump = true;
         }
-        
+
+        /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump)
+        {
+            m_VerticalSpeed = m_JumpSpeed + 10;
+            m_Animator.SetBool("Jump2", true);
+            l_HasMoved = true;
+        }*/
+
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
         l_Movement.y = m_VerticalSpeed * Time.deltaTime;
 
@@ -110,6 +119,8 @@ public class MarioPlayerController : MonoBehaviour
             m_AirTime = 0;
             m_Animator.SetBool("Falling", false);
             m_Animator.SetBool("Jump", false);
+            m_Animator.SetBool("Jump2", false);
+            m_firstJump = false;
         }
         else
         {
