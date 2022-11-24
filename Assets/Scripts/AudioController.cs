@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 public class AudioController : MonoBehaviour
 {
     public AudioMixer ambient, effects;
-    public AudioSource madremiaCR7, buttonClick, checkpointReached, playerDeath;
+    public AudioSource madremiaCR7, buttonClick, checkpointReached, playerDeath,jumpMario,doubleJump,tripleJump;
     public AudioSource[] portalEnter;
 
     public static AudioController instance;

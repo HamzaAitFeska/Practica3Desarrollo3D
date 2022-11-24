@@ -16,7 +16,8 @@ public class MarioPlayerController : MonoBehaviour
     public float m_JumpSpeed = 10.0f;
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public float m_AirTime;
-    public bool m_firstJump = false;
+    public bool m_doubleJump = false;
+    public bool m_tripleJump = false;
 
     CharacterController m_characterController;
     Animator m_Animator;
@@ -91,15 +92,39 @@ public class MarioPlayerController : MonoBehaviour
         }
         m_characterController.Move(l_Movement);
 
-        if (Input.GetKeyDown(m_JumpKeyCode) && m_AirTime < 0.1f)
+        if (Input.GetKeyDown(m_JumpKeyCode)) //&& m_AirTime < 0.1f)
         {
-            m_VerticalSpeed = m_JumpSpeed;
-            m_Animator.SetBool("Jump", true);
-            l_HasMoved = true;
-            m_firstJump = true;
+            if (m_OnGround) //&& m_AirTime < 0.1f)
+            {
+               m_VerticalSpeed = m_JumpSpeed;
+               m_Animator.SetBool("Jump", true);
+               l_HasMoved = true;
+               m_doubleJump = true;
+               AudioController.instance.PlayOneShot(AudioController.instance.jumpMario);
+
+            }
+            else if (m_doubleJump) //&& m_AirTime > 0.1f)
+            {
+                m_VerticalSpeed = m_JumpSpeed;
+                m_Animator.SetBool("Jump2", true);
+                //m_Animator.SetBool("Jump", false);
+                l_HasMoved = true;
+                m_doubleJump = false;
+                m_tripleJump = true;
+                AudioController.instance.PlayOneShot(AudioController.instance.doubleJump);
+            }
+            else if (m_tripleJump)
+            {
+                m_VerticalSpeed = m_JumpSpeed;
+                m_Animator.SetBool("Jump3", true);
+                //m_Animator.SetBool("Jump2", false);
+                l_HasMoved = true;
+                m_tripleJump = false;
+                AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
+            }
         }
 
-        /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump)
+        /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump && m_VerticalSpeed > 0)
         {
             m_VerticalSpeed = m_JumpSpeed + 10;
             m_Animator.SetBool("Jump2", true);
@@ -120,7 +145,9 @@ public class MarioPlayerController : MonoBehaviour
             m_Animator.SetBool("Falling", false);
             m_Animator.SetBool("Jump", false);
             m_Animator.SetBool("Jump2", false);
-            m_firstJump = false;
+            m_Animator.SetBool("Jump3", false);
+            m_doubleJump = false;
+            m_tripleJump = false;
         }
         else
         {
@@ -136,6 +163,7 @@ public class MarioPlayerController : MonoBehaviour
 
         if(m_VerticalSpeed > 0)
         {
+            //m_Animator.SetBool("Falling", false);
             l_HasMoved = true;
         }
         m_playerIsMoving = l_HasMoved;

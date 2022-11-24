@@ -102,7 +102,6 @@ public class CameraController : MonoBehaviour
             if(m_TimeToComeback > 25)
             {
                 l_DesirePosition = m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * (l_Distance * 1.2f);
-                transform.position = Vector3.Lerp(transform.position, l_DesirePosition,120);
                 m_TimeToComeback = 0;
                 /*if(l_DesirePosition == m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * l_Distance && m_TimeToComeback > 26)
                 {
@@ -114,15 +113,8 @@ public class CameraController : MonoBehaviour
 
         transform.position = l_DesirePosition;
         transform.LookAt(m_LookAtTransform);
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-        {
-
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-        {
-
-        }
-
+        
+        
     }
 
     
