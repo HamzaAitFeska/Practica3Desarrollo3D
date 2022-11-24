@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class MarioPlayerController : MonoBehaviour
+public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 {
+    public enum TPunchType { RightHand, LeftHand, Kick }
     [Header("Character Parameters")]
     public Camera m_Camera;
     public float m_LerpRotation = 0.85f;
@@ -10,6 +11,8 @@ public class MarioPlayerController : MonoBehaviour
     public float m_RunSpeed = 6.5f;
     public static MarioPlayerController instance;
     public bool m_playerIsMoving = false;
+    Vector3 StartPosition;
+    Quaternion StartRotation;
     [Header("Jump")]
     public float m_VerticalSpeed = 0.0f;
     bool m_OnGround = true; 
@@ -18,6 +21,17 @@ public class MarioPlayerController : MonoBehaviour
     public float m_AirTime;
     public bool m_doubleJump = false;
     public bool m_tripleJump = false;
+    [Header("Punch")]
+    public float m_ComboPunchTime = 2.5f;
+    float m_ComboPunchCurrentTime;
+    public Collider m_LeftHandCollider;
+    public Collider m_RightHandCollider;
+    public Collider m_KickCollider;
+    TPunchType m_CurrentPunch;
+    bool m_IsPuchEnable = false;
+    [Header("Elevator")]
+    public float m_ElevatorDotAngle = 0.95f;
+    Collider m_CurrentElevatorCollider = null;
 
     CharacterController m_characterController;
     Animator m_Animator;
@@ -29,7 +43,31 @@ public class MarioPlayerController : MonoBehaviour
     }
     void Start()
     {
+        m_ComboPunchCurrentTime =-m_ComboPunchTime;
         instance = this;
+        m_LeftHandCollider.gameObject.SetActive(false);
+        m_RightHandCollider.gameObject.SetActive(false);
+        m_KickCollider.gameObject.SetActive(false);
+        StartPosition = transform.position;
+        StartRotation = transform.rotation;
+        GameController.GetGameController().AddRestartGameElement(this);
+        GameController.GetGameController().SetPlayer(this);
+    }
+
+    public void SetPunchActive(TPunchType PunchType,bool Active)
+    {
+        if(PunchType == TPunchType.RightHand)
+        {
+            m_RightHandCollider.gameObject.SetActive(Active);
+        }
+        else if (PunchType == TPunchType.LeftHand)
+        {
+            m_LeftHandCollider.gameObject.SetActive(Active);
+        }
+        else if(PunchType == TPunchType.Kick)
+        {
+            m_KickCollider.gameObject.SetActive(Active);
+        }
     }
 
     // Update is called once per frame
@@ -86,9 +124,17 @@ public class MarioPlayerController : MonoBehaviour
         m_Animator.SetFloat("Speed", l_Speed);
         l_Movement = l_Movement * l_MovementSpeed * Time.deltaTime;
         
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && CanPunch())
         {
-            m_Animator.SetTrigger("Punch");
+            if (MustRestartComboPunch())
+            {
+                SetComboPunch(TPunchType.RightHand);
+            }
+            else
+            {
+                NextComboPunch();
+            }
+            
         }
         m_characterController.Move(l_Movement);
 
@@ -167,6 +213,16 @@ public class MarioPlayerController : MonoBehaviour
             l_HasMoved = true;
         }
         m_playerIsMoving = l_HasMoved;
+        
+    }
+
+    private void LateUpdate()
+    {
+        if (m_CurrentElevatorCollider != null)
+        {
+            Vector3 l_EulerRotation = transform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(0.0f, l_EulerRotation.y, 0.0f);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -176,5 +232,106 @@ public class MarioPlayerController : MonoBehaviour
             PlayerLife.instance.currentLife = 0;
         }
 
+        if(other.CompareTag("Elevator") && CanAttachtoElevator(other))
+        {
+            AttachToElevator(other);
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Elevator"))
+        {
+            if(m_CurrentElevatorCollider==other && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle)
+            {
+                DetachElevator();
+            }
+            if (CanAttachtoElevator(other))
+            {
+                AttachToElevator(other);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Elevator") && other == m_CurrentElevatorCollider)
+        {
+            DetachElevator();
+        }
+    }
+
+    bool CanAttachtoElevator(Collider other)
+    {
+        return m_CurrentElevatorCollider == null && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle;
+    }
+
+    void AttachToElevator(Collider other)
+    {
+        transform.SetParent(other.transform);
+        m_CurrentElevatorCollider = other;
+    }
+
+    void DetachElevator()
+    {
+        transform.SetParent(null);
+        m_CurrentElevatorCollider = null;
+    }
+    bool CanPunch()
+    {
+        return !m_IsPuchEnable;
+    }
+
+    public void SetIsPunchEnable(bool IsPunchEnable)
+    {
+        m_IsPuchEnable = IsPunchEnable;
+    }
+
+    bool MustRestartComboPunch()
+    {
+        return (Time.time - m_ComboPunchCurrentTime) > m_ComboPunchTime;
+    }
+
+    void NextComboPunch()
+    {
+        if(m_CurrentPunch == TPunchType.RightHand)
+        {
+            SetComboPunch(TPunchType.LeftHand);
+        }
+        else if(m_CurrentPunch == TPunchType.LeftHand)
+        {
+            SetComboPunch(TPunchType.Kick);
+        }
+        else if(m_CurrentPunch == TPunchType.Kick)
+        {
+            SetComboPunch(TPunchType.RightHand);
+        }
+    }
+
+    void SetComboPunch(TPunchType PunchType)
+    {
+        m_CurrentPunch = PunchType;
+        m_ComboPunchCurrentTime = Time.time;
+        m_IsPuchEnable = true;
+        if(m_CurrentPunch == TPunchType.RightHand)
+        {
+            m_Animator.SetTrigger("Punch");
+        }
+        else if(m_CurrentPunch == TPunchType.LeftHand)
+        {
+            m_Animator.SetTrigger("PunchLeft");
+        }
+        else if(m_CurrentPunch == TPunchType.Kick)
+        {
+            m_Animator.SetTrigger("Kick");
+        }
+
+    }
+
+    public void RestartGame()
+    {
+        m_characterController.enabled = false;
+        transform.position = StartPosition;
+        transform.rotation = StartRotation;
+        m_characterController.enabled = true;
     }
 }
