@@ -32,7 +32,8 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     [Header("Elevator")]
     public float m_ElevatorDotAngle = 0.95f;
     Collider m_CurrentElevatorCollider = null;
-
+    [Header("Bridge")]
+    public float m_BridgeForce = 2.0f;
     CharacterController m_characterController;
     Animator m_Animator;
     // Start is called before the first frame update
@@ -222,6 +223,14 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         {
             Vector3 l_EulerRotation = transform.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(0.0f, l_EulerRotation.y, 0.0f);
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit.gameObject.tag == "Bridge")
+        {
+            hit.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(-hit.normal * m_BridgeForce, hit.point);
         }
     }
 
