@@ -69,6 +69,21 @@ public class PlayerLife : MonoBehaviour
     {
         StartCoroutine(Respawn());
     }
+    public void AddHealth(int healthQuantity)
+    {
+        if (currentLife < 100)
+        {
+            currentLife += healthQuantity;
+            if ((currentLife += healthQuantity) >= 100)
+            {
+                currentLife = 100;
+            }
+            else
+            {
+                currentLife += healthQuantity;
+            }
+        }
+    }
 
     private IEnumerator Respawn()
     {
