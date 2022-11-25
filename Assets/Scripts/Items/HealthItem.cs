@@ -18,7 +18,7 @@ public class HealthItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerLife.instance.AddHealth(l_HealthToRestore);
+            //PlayerLife.instance.AddHealth(l_HealthToRestore);
             AudioController.instance.PlayOneShot(m_HealthItemPickup);
             Destroy(gameObject);
         }

@@ -18,7 +18,6 @@ public class CoinItem : MonoBehaviour
             //PlayerCoins.instance.AddCoin();
             AudioController.instance.PlayOneShot(m_CoinItemPickup);
             Destroy(gameObject);
-            Debug.Log("Pickup");
         }
 
     }
