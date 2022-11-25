@@ -312,9 +312,13 @@ MonoBehaviour:
   m_YawRotationalSpeed: 720
   m_PitchRotationalSpeed: 720
   m_Pitch: 0
+  m_Yaw: 0
   m_MinPitch: -60
   m_MaxPitch: 20
   m_playedOnce: 0
+  m_StartPitch: 0
+  m_StartYaw: 0
+  m_BetterCameraTransition: 0.15
   m_AvoidObjectsMask:
     serializedVersion: 2
     m_Bits: 55
@@ -1498,7 +1502,7 @@ HingeJoint:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 1
-  m_EnablePreprocessing: 1
+  m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
 --- !u!54 &947031823
@@ -1965,7 +1969,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338434781}
-  m_LocalRotation: {x: -0, y: 0.6547897, z: -0, w: 0.7558112}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.297, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

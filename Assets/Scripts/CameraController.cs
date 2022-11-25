@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -10,9 +11,13 @@ public class CameraController : MonoBehaviour
     public float m_YawRotationalSpeed = 720.0f;
     public float m_PitchRotationalSpeed = 720.0f;
     public float m_Pitch = 0.0f;
+    public float m_Yaw = 0.0f;
     public float m_MinPitch = -60.0f;
     public float m_MaxPitch = 20.0f;
     public bool m_playedOnce = false;
+    public float m_StartPitch;
+    public float m_StartYaw;
+    public float m_BetterCameraTransition = 0.15f;
     public static CameraController instance;
     [Header("Avoid Obstacles")]
     public LayerMask m_AvoidObjectsMask;
@@ -27,6 +32,8 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         m_MouseLocked = Cursor.lockState == CursorLockMode.Locked;
         instance = this;
+        m_Pitch = m_StartPitch;
+        
     }
 #if UNITY_EDITOR
     void UpadteInputDebug()
@@ -51,8 +58,6 @@ public class CameraController : MonoBehaviour
 #endif
         float l_MouseX = Input.GetAxis("Mouse X");
         float l_MouseY = Input.GetAxis("Mouse Y");
-        float lastMouseX = l_MouseX;
-        float lastMouseY = l_MouseY;
         //Debug.Log(l_MouseX);
 #if UNITY_EDITOR
         if (m_AngleLocked)
@@ -65,13 +70,15 @@ public class CameraController : MonoBehaviour
         float l_Distance = Vector3.Distance(transform.position, m_LookAtTransform.position);
         l_Distance = Mathf.Clamp(l_Distance, m_MinxDistance, m_MaxDistance);
         Vector3 l_EulerAngles = transform.rotation.eulerAngles;
-        float l_Yaw = l_EulerAngles.y;
-        
-        l_Yaw += l_MouseX * m_YawRotationalSpeed * Time.deltaTime;
+        m_Yaw = l_EulerAngles.y;
+
+        BetterCamera(l_MouseX,l_MouseY);
+
+        m_Yaw += l_MouseX * m_YawRotationalSpeed * Time.deltaTime;
         m_Pitch += l_MouseY * m_PitchRotationalSpeed * Time.deltaTime;
         m_Pitch = Mathf.Clamp(m_Pitch, m_MinPitch, m_MaxPitch);
-        Vector3 l_ForwardCamera = new Vector3(Mathf.Sin(l_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad),
-            Mathf.Sin(m_Pitch * Mathf.Deg2Rad), Mathf.Cos(l_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad));
+        Vector3 l_ForwardCamera = new Vector3(Mathf.Sin(m_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad),
+            Mathf.Sin(m_Pitch * Mathf.Deg2Rad), Mathf.Cos(m_Yaw * Mathf.Deg2Rad) * Mathf.Cos(m_Pitch * Mathf.Deg2Rad));
         Vector3 l_DesirePosition = m_LookAtTransform.position - l_ForwardCamera * l_Distance;
         
         Ray l_Ray = new Ray(m_LookAtTransform.position, -l_ForwardCamera);
@@ -95,21 +102,7 @@ public class CameraController : MonoBehaviour
             m_playedOnce = false;
         }
 
-        if(transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == lastMouseX && l_MouseY == lastMouseY && !MarioPlayerController.instance.m_playerIsMoving)
-        {
-            m_TimeToComeback += Time.deltaTime;
-            Vector3 l_StartForward = l_ForwardCamera;
-            if(m_TimeToComeback > 25)
-            {
-                l_DesirePosition = m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * (l_Distance * 1.2f);
-                m_TimeToComeback = 0;
-                /*if(l_DesirePosition == m_LookAtTransform.position + l_ForwardCamera - MarioPlayerController.instance.transform.forward * l_Distance && m_TimeToComeback > 26)
-                {
-                    //m_TimeToComeback = 0;
-                    l_DesirePosition = m_LookAtTransform.position - l_ForwardCamera * l_Distance;
-                }*/
-            }
-        }
+        
 
         transform.position = l_DesirePosition;
         transform.LookAt(m_LookAtTransform);
@@ -117,5 +110,23 @@ public class CameraController : MonoBehaviour
         
     }
 
-    
+    private void BetterCamera(float l_MouseX, float l_MouseY)
+    {
+        if (transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == 0.0f && l_MouseY == 0.0f && !MarioPlayerController.instance.m_playerIsMoving)
+        {
+            Debug.Log(m_TimeToComeback);
+            m_TimeToComeback += Time.deltaTime;
+            if (m_TimeToComeback > 5)
+            {
+
+                m_Yaw = Mathf.Lerp(m_Yaw,m_LookAtTransform.rotation.eulerAngles.y,m_BetterCameraTransition);
+                m_Pitch = Mathf.Lerp(m_Pitch,m_StartPitch,m_BetterCameraTransition);
+
+            }
+        }
+        else if (m_TimeToComeback != 0)
+        {
+            m_TimeToComeback = 0;
+        }
+    }
 }
