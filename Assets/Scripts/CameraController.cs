@@ -114,7 +114,6 @@ public class CameraController : MonoBehaviour
     {
         if (transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == 0.0f && l_MouseY == 0.0f && !MarioPlayerController.instance.m_playerIsMoving)
         {
-            Debug.Log(m_TimeToComeback);
             m_TimeToComeback += Time.deltaTime;
             if (m_TimeToComeback > 5)
             {

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1920035159517368889}
   - component: {fileID: 1920035159517368886}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ElevatorPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,9 +63,9 @@ GameObject:
   - component: {fileID: 1920035160522741856}
   - component: {fileID: 1920035160522741857}
   - component: {fileID: 1920035160522741886}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TriggerDown
-  m_TagString: Untagged
+  m_TagString: Elevator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -158,9 +158,9 @@ GameObject:
   - component: {fileID: 1920035160681981181}
   - component: {fileID: 1920035160681981178}
   - component: {fileID: 1920035160681981179}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TriggerUp
-  m_TagString: Untagged
+  m_TagString: Elevator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 1920035161138781286}
   - component: {fileID: 1920035161138781287}
   - component: {fileID: 1920035161138781284}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Elevator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,6 +347,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: b81f36fec05c16e46ac9bd882d4ab594, type: 3}
       propertyPath: m_Name
       value: elevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: b81f36fec05c16e46ac9bd882d4ab594, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b81f36fec05c16e46ac9bd882d4ab594, type: 3}
       propertyPath: m_RootOrder

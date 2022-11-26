@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthItem : MonoBehaviour
 {
-    readonly int l_HealthToRestore = 20;
+    readonly int l_HealthToRestore = 1;
 
     public Animation m_Animation;
     public AnimationClip m_HealthItemIddleClip;
@@ -18,7 +18,7 @@ public class HealthItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //PlayerLife.instance.AddHealth(l_HealthToRestore);
+            PlayerLife.instance.AddHealth(l_HealthToRestore);
             AudioController.instance.PlayOneShot(m_HealthItemPickup);
             Destroy(gameObject);
         }

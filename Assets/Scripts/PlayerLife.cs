@@ -10,7 +10,7 @@ public class PlayerLife : MonoBehaviour
     // Start is called before the first frame update
     public static PlayerLife instance;
     [Header("PlayerLife Parameters")]
-    private readonly int maxLife = 100;
+    private readonly int maxLife = 8;
     public float currentLife;
     public KeyCode damagePlayer;
     public Vector3 CheckpointPosition;
@@ -18,9 +18,10 @@ public class PlayerLife : MonoBehaviour
     public bool m_IsDead;
     public bool m_PlayedOnce;
     public bool m_IsCreated;
-    [Header("GameOver")]
+    public float m_TimetoComeback;
+    /*[Header("GameOver")]
     public GameObject GameOver;
-    public GameObject UI;
+    public GameObject UI;*/
     
     void Start()
     {
@@ -29,13 +30,13 @@ public class PlayerLife : MonoBehaviour
         m_IsCreated = false;
         m_IsDead = false;
         m_PlayedOnce = false;
-        GameOver.SetActive(false);
+        //GameOver.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(currentLife <= 0)
+        /*if(currentLife <= 0)
         {
             currentLife = 0;
             GameOver.SetActive(true);
@@ -46,6 +47,23 @@ public class PlayerLife : MonoBehaviour
             MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
             UI.SetActive(false);
             m_IsDead = true;
+        }*/
+
+        if (UIMANAGER.instance.m_AnimatorUI.GetBool("DOWN") == true)
+        {
+            m_TimetoComeback += Time.deltaTime;
+        }
+
+        if (m_TimetoComeback > 3)
+        {
+            UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", false);
+            UIMANAGER.instance.m_AnimatorUI.SetBool("UP", true);
+            m_TimetoComeback = 0;
+        }
+
+        if (Input.GetKeyDown(damagePlayer))
+        {
+            DamagePlayer();
         }
 
               
@@ -62,7 +80,10 @@ public class PlayerLife : MonoBehaviour
 
     public void DamagePlayer()
     {
+        m_TimetoComeback = 0;
         currentLife--;
+        UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", true);
+        UIMANAGER.instance.m_AnimatorUI.SetBool("UP", false);
     }
 
     public void Death()
@@ -71,17 +92,19 @@ public class PlayerLife : MonoBehaviour
     }
     public void AddHealth(int healthQuantity)
     {
-        if (currentLife < 100)
+        if (currentLife < maxLife)
         {
             currentLife += healthQuantity;
-            if ((currentLife += healthQuantity) >= 100)
+            if ((currentLife += healthQuantity) >= maxLife)
             {
-                currentLife = 100;
+                currentLife = maxLife;
             }
             else
             {
                 currentLife += healthQuantity;
             }
+            UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", true);
+            UIMANAGER.instance.m_AnimatorUI.SetBool("UP", false);
         }
     }
 
@@ -89,8 +112,8 @@ public class PlayerLife : MonoBehaviour
     {
         transform.position = CheckpointPosition;
         yield return new WaitForSeconds(0.25f);
-        GameOver.SetActive(false);
-        UI.SetActive(true);
+        //GameOver.SetActive(false);
+        //UI.SetActive(true);
         MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
         CameraController.instance.m_AngleLocked = false;
         CameraController.instance.m_MouseLocked = false;
