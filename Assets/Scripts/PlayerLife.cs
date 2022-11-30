@@ -11,6 +11,7 @@ public class PlayerLife : MonoBehaviour
     public static PlayerLife instance;
     [Header("PlayerLife Parameters")]
     private readonly int maxLife = 8;
+    private readonly int m_TotalLifes = 3;
     public float currentLife;
     public KeyCode damagePlayer;
     public Vector3 CheckpointPosition;
@@ -19,6 +20,7 @@ public class PlayerLife : MonoBehaviour
     public bool m_PlayedOnce;
     public bool m_IsCreated;
     public float m_TimetoComeback;
+    public Text m_TotalLifesText;
     /*[Header("GameOver")]
     public GameObject GameOver;
     public GameObject UI;*/
@@ -36,6 +38,7 @@ public class PlayerLife : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        m_TotalLifesText.text = m_TotalLifes.ToString();
         /*if(currentLife <= 0)
         {
             currentLife = 0;

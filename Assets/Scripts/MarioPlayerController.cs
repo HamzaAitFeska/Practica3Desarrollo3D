@@ -18,11 +18,16 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_VerticalSpeed = 0.0f;
     bool m_OnGround = true; 
     public float m_JumpSpeed = 10.0f;
+    public float m_JumpSpeedLong = 15.0f;
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public float m_AirTime;
     public bool m_doubleJump = false;
     public bool m_tripleJump = false;
+    public float m_TimeforLongJump = 0.5f;
+    private float m_CurrentTimeButton;
     TJumpType m_CurrentJump;
+    public float m_ComboJumpTime = 2.5f;
+    float m_ComboJumpCurrentTime;
     [Header("Punch")]
     public float m_ComboPunchTime = 2.5f;
     float m_ComboPunchCurrentTime;
@@ -46,6 +51,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     void Start()
     {
+        m_ComboJumpCurrentTime = -m_ComboJumpTime;
         m_ComboPunchCurrentTime =-m_ComboPunchTime;
         instance = this;
         m_LeftHandCollider.gameObject.SetActive(false);
@@ -141,9 +147,24 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         }
         m_characterController.Move(l_Movement);
 
-        if (Input.GetKeyDown(m_JumpKeyCode)) //&& m_AirTime < 0.1f)
+        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton < 2f) //&& m_AirTime < 0.1f)
         {
-            if (m_OnGround) //&& m_AirTime < 0.1f)
+            if(!m_doubleJump && m_CurrentJump == TJumpType.Jump)
+            {
+                m_VerticalSpeed = m_JumpSpeed;
+                SetComboJump(TJumpType.Jump);
+                m_doubleJump = true;
+                l_HasMoved = true;
+            }
+            else
+            {
+                m_VerticalSpeed = m_JumpSpeed;
+                NextComboJump();
+                l_HasMoved = true;
+
+            }
+            
+            /*if (m_OnGround) //&& m_AirTime < 0.1f)
             {
                m_VerticalSpeed = m_JumpSpeed;
                m_Animator.SetBool("Jump", true);
@@ -170,17 +191,35 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 l_HasMoved = true;
                 m_tripleJump = false;
                 AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
-            }
+            }*/
         }
 
-        /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump && m_VerticalSpeed > 0)
+        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f)
         {
-            m_VerticalSpeed = m_JumpSpeed + 10;
-            m_Animator.SetBool("Jump2", true);
+            m_VerticalSpeed = m_JumpSpeedLong;
+            m_Animator.SetBool("LongJump", true);
             l_HasMoved = true;
-        }*/
+        }
 
-        m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
+        if (Input.GetKeyDown(m_JumpKeyCode))
+        {
+            m_CurrentTimeButton = Time.time;
+        }
+
+        if (Input.GetKeyUp(m_JumpKeyCode))
+        {
+            Debug.Log((Time.time - m_CurrentTimeButton).ToString("00:00.00"));
+            
+        }
+
+         /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump && m_VerticalSpeed > 0)
+         {
+                m_VerticalSpeed = m_JumpSpeed + 10;
+                m_Animator.SetBool("Jump2", true);
+                l_HasMoved = true;
+            }*/
+
+            m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
         l_Movement.y = m_VerticalSpeed * Time.deltaTime;
 
         CollisionFlags l_CollisionFlags = m_characterController.Move(l_Movement);
@@ -195,7 +234,8 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_Animator.SetBool("Jump", false);
             m_Animator.SetBool("Jump2", false);
             m_Animator.SetBool("Jump3", false);
-            m_doubleJump = false;
+            m_Animator.SetBool("LongJump", false);
+            //m_doubleJump = false;
             m_tripleJump = false;
         }
         else
@@ -336,6 +376,11 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_Animator.SetTrigger("Kick");
         }
 
+    }
+
+    bool MustRestartComboJump()
+    {
+        return (Time.time - m_ComboJumpCurrentTime) > m_ComboJumpTime;
     }
 
     void NextComboJump()

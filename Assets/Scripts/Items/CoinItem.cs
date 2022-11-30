@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class CoinItem : MonoBehaviour
 {
     public Animation m_Animation;
@@ -15,7 +14,7 @@ public class CoinItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //PlayerCoins.instance.AddCoin();
+            PlayerCoins.instance.AddCoin();
             AudioController.instance.PlayOneShot(m_CoinItemPickup);
             Destroy(gameObject);
         }

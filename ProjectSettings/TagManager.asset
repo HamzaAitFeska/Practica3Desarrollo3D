@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bridge
   - Elevator
+  - DeadZone
   layers:
   - Default
   - TransparentFX
