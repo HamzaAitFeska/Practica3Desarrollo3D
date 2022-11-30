@@ -4,6 +4,7 @@ using UnityEngine;
 public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 {
     public enum TPunchType { RightHand, LeftHand, Kick }
+    public enum TJumpType { Jump, Double_Jump, Triple_Jump }
     [Header("Character Parameters")]
     public Camera m_Camera;
     public float m_LerpRotation = 0.85f;
@@ -21,6 +22,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_AirTime;
     public bool m_doubleJump = false;
     public bool m_tripleJump = false;
+    TJumpType m_CurrentJump;
     [Header("Punch")]
     public float m_ComboPunchTime = 2.5f;
     float m_ComboPunchCurrentTime;
@@ -332,6 +334,44 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         else if(m_CurrentPunch == TPunchType.Kick)
         {
             m_Animator.SetTrigger("Kick");
+        }
+
+    }
+
+    void NextComboJump()
+    {
+        if (m_CurrentJump == TJumpType.Jump)
+        {
+            SetComboJump(TJumpType.Double_Jump);
+        }
+        else if (m_CurrentJump == TJumpType.Double_Jump)
+        {
+            SetComboJump(TJumpType.Triple_Jump);
+        }
+        else if (m_CurrentJump == TJumpType.Triple_Jump)
+        {
+            SetComboJump(TJumpType.Jump);
+        }
+    }
+
+    void SetComboJump(TJumpType JumpType)
+    {
+        m_CurrentJump = JumpType;
+        m_ComboPunchCurrentTime = Time.time;
+        m_IsPuchEnable = true;
+        if (m_CurrentJump == TJumpType.Jump)
+        {
+            m_Animator.SetBool("Jump",true);
+        }
+        else if (m_CurrentJump == TJumpType.Double_Jump)
+        {
+            m_Animator.SetBool("Jump", false);
+            m_Animator.SetBool("Jump2", true);
+        }
+        else if (m_CurrentJump == TJumpType.Triple_Jump)
+        {
+            m_Animator.SetBool("Jump2", false);
+            m_Animator.SetBool("Jump3", true);
         }
 
     }
