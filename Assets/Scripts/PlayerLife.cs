@@ -54,16 +54,16 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
             MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die",true);
         }
 
-        if (UIMANAGER.instance.m_AnimatorUI.GetBool("DOWN") == true)
+        if (uiManager.instance.isOutsideScreen == false)
         {
             m_TimetoComeback += Time.deltaTime;
         }
 
-        if (m_TimetoComeback > 3)
+        if (m_TimetoComeback > 3 && uiManager.instance.isOutsideScreen == false)
         {
-            UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", false);
-            UIMANAGER.instance.m_AnimatorUI.SetBool("UP", true);
+            uiManager.instance.m_AnimationUI.Play("HealthBarUp");
             m_TimetoComeback = 0;
+            uiManager.instance.isOutsideScreen = true;
         }
 
         if (Input.GetKeyDown(damagePlayer))
@@ -87,9 +87,12 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     {
         m_TimetoComeback = 0;
         currentLife--;
-        UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", true);
-        UIMANAGER.instance.m_AnimatorUI.SetBool("UP", false);
         MarioPlayerController.instance.GetComponent<Animator>().SetTrigger("Hit");
+        if (uiManager.instance.isOutsideScreen == true)
+        {
+            uiManager.instance.m_AnimationUI.Play("HealthBarDown");
+            uiManager.instance.isOutsideScreen = false;
+        }
     }
 
     public void Death()
@@ -109,8 +112,12 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
             {
                 currentLife += healthQuantity;
             }
-            UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", true);
-            UIMANAGER.instance.m_AnimatorUI.SetBool("UP", false);
+            if (uiManager.instance.isOutsideScreen == true)
+            {
+                uiManager.instance.m_AnimationUI.Play("HealthBarDown");
+                uiManager.instance.isOutsideScreen = false; 
+            }
+            m_TimetoComeback = 0;
         }
     }
 
