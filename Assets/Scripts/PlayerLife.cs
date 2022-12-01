@@ -5,7 +5,7 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 
-public class PlayerLife : MonoBehaviour
+public class PlayerLife : MonoBehaviour, IRestartGameElements
 {
     // Start is called before the first frame update
     public static PlayerLife instance;
@@ -21,9 +21,9 @@ public class PlayerLife : MonoBehaviour
     public bool m_IsCreated;
     public float m_TimetoComeback;
     public Text m_TotalLifesText;
-    /*[Header("GameOver")]
+    [Header("GameOver")]
     public GameObject GameOver;
-    public GameObject UI;*/
+    public GameObject UI;
     
     void Start()
     {
@@ -32,14 +32,15 @@ public class PlayerLife : MonoBehaviour
         m_IsCreated = false;
         m_IsDead = false;
         m_PlayedOnce = false;
-        //GameOver.SetActive(false);
+        GameOver.SetActive(false);
+        GameController.GetGameController().AddRestartGameElement(this);
     }
 
     // Update is called once per frame
     void Update()
     {
         m_TotalLifesText.text = m_TotalLifes.ToString();
-        /*if(currentLife <= 0)
+        if(currentLife <= 0)
         {
             currentLife = 0;
             GameOver.SetActive(true);
@@ -50,7 +51,8 @@ public class PlayerLife : MonoBehaviour
             MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
             UI.SetActive(false);
             m_IsDead = true;
-        }*/
+            MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die",true);
+        }
 
         if (UIMANAGER.instance.m_AnimatorUI.GetBool("DOWN") == true)
         {
@@ -87,6 +89,7 @@ public class PlayerLife : MonoBehaviour
         currentLife--;
         UIMANAGER.instance.m_AnimatorUI.SetBool("DOWN", true);
         UIMANAGER.instance.m_AnimatorUI.SetBool("UP", false);
+        MarioPlayerController.instance.GetComponent<Animator>().SetTrigger("Hit");
     }
 
     public void Death()
@@ -115,8 +118,8 @@ public class PlayerLife : MonoBehaviour
     {
         transform.position = CheckpointPosition;
         yield return new WaitForSeconds(0.25f);
-        //GameOver.SetActive(false);
-        //UI.SetActive(true);
+        GameOver.SetActive(false);
+        UI.SetActive(true);
         MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
         CameraController.instance.m_AngleLocked = false;
         CameraController.instance.m_MouseLocked = false;
@@ -126,5 +129,25 @@ public class PlayerLife : MonoBehaviour
         m_IsDead = false;
         m_PlayedOnce = false;
         currentLife = maxLife;
+    }
+
+    public void RestartGame()
+    {
+        GameOver.SetActive(false);
+        UI.SetActive(true);
+        CameraController.instance.m_AngleLocked = false;
+        CameraController.instance.m_MouseLocked = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        m_IsCreated = true;
+        m_IsDead = false;
+        m_PlayedOnce = false;
+        currentLife = maxLife;
+        MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die", false);
+    }
+
+    public void GameRestart()
+    {
+        GameController.GetGameController().RestartGame();
     }
 }
