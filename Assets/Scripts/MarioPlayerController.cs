@@ -36,6 +36,11 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public Collider m_KickCollider;
     TPunchType m_CurrentPunch;
     bool m_IsPuchEnable = false;
+    [Header("JumpKill")]
+    public float m_JumpKillerSpeed = 5.0f;
+    public float m_MaxAngleToKillGoomba = 60.0f;
+    [Header("CheckPoint")]
+    public CheckPoint m_CurrentCheckPoint = null;
     [Header("Elevator")]
     public float m_ElevatorDotAngle = 0.95f;
     Collider m_CurrentElevatorCollider = null;
@@ -268,11 +273,29 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         }
     }
 
+    void JumpOverEnemy()
+    {
+        m_VerticalSpeed = m_JumpKillerSpeed;
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if(hit.gameObject.tag == "Bridge")
         {
             hit.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(-hit.normal * m_BridgeForce, hit.point);
+        }
+        else if(hit.gameObject.tag == "Goomba")
+        {
+            if (CanKillGoomba(hit.normal))
+            {
+                hit.gameObject.GetComponent<Goomba>().Kill();
+                JumpOverEnemy();
+            }
+            else
+            {
+                //Hacer Repulsion entre el Goomba y el Mario 
+                Debug.DrawRay(hit.point, hit.normal * 3.0f, Color.blue, 5.0f);
+            }
         }
     }
 
@@ -311,10 +334,16 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         }
     }
 
+    bool CanKillGoomba(Vector3 Normal)
+    {
+        return Vector3.Dot(Normal, Vector3.up) >= Mathf.Cos(m_MaxAngleToKillGoomba * Mathf.Deg2Rad);
+    }
     bool CanAttachtoElevator(Collider other)
     {
         return m_CurrentElevatorCollider == null && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle;
     }
+
+
 
     void AttachToElevator(Collider other)
     {
@@ -424,8 +453,16 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public void RestartGame()
     {
         m_characterController.enabled = false;
-        transform.position = StartPosition;
-        transform.rotation = StartRotation;
+        if(m_CurrentCheckPoint == null)
+        {
+            transform.position = StartPosition;
+            transform.rotation = StartRotation;
+        }
+        else
+        {
+            transform.position = PlayerLife.instance.CheckpointPosition;
+            transform.rotation = PlayerLife.instance.CheckpointRotation;
+        }
         m_characterController.enabled = true;
     }
 }

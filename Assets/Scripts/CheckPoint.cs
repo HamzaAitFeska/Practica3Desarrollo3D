@@ -10,6 +10,7 @@ public class CheckPoint : MonoBehaviour
         {
             PlayerLife.instance.CheckpointPosition = transform.position;
             PlayerLife.instance.CheckpointRotation = MarioPlayerController.instance.GetComponent<CharacterController>().transform.rotation;
+            MarioPlayerController.instance.m_CurrentCheckPoint = other.GetComponent<CheckPoint>();
             //AudioController.instance.PlayOneShot(AudioController.instance.checkpointReached);
             Destroy(gameObject);
         }
