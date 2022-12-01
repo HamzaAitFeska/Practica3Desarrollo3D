@@ -1678,6 +1678,8 @@ MonoBehaviour:
   m_IsCreated: 0
   m_TimetoComeback: 0
   m_TotalLifesText: {fileID: 1913082266}
+  GameOver: {fileID: 1118864800}
+  UI: {fileID: 1429813698}
 --- !u!143 &390288066
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3164,7 +3166,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1175297813}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 390288065}
+        m_TargetAssemblyTypeName: PlayerLife, Assembly-CSharp
+        m_MethodName: GameRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1175297813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4351,7 +4365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2028862096
 RectTransform:
   m_ObjectHideFlags: 0
