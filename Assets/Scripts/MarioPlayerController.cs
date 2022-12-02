@@ -12,6 +12,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_RunSpeed = 6.5f;
     public static MarioPlayerController instance;
     public bool m_playerIsMoving = false;
+    public bool m_ActiveInput;
     Vector3 StartPosition;
     Quaternion StartRotation;
     [Header("Jump")]
@@ -56,6 +57,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     void Start()
     {
+        m_ActiveInput = true;
         m_ComboJumpCurrentTime = -m_ComboJumpTime;
         m_ComboPunchCurrentTime =-m_ComboPunchTime;
         instance = this;
@@ -97,22 +99,22 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         bool l_HasMoved = false;
 
         Vector3 l_Movement = Vector3.zero;
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) && m_ActiveInput)
         {
             l_HasMoved = true;
             l_Movement = l_ForwardCamera;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) && m_ActiveInput)
         {
             l_HasMoved = true;
             l_Movement = -l_ForwardCamera;
         }
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) && m_ActiveInput)
         {
             l_HasMoved = true;
             l_Movement -= l_RightCamera;
         }
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) && m_ActiveInput)
         {
             l_HasMoved = true;
             l_Movement += l_RightCamera;
@@ -138,7 +140,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         m_Animator.SetFloat("Speed", l_Speed);
         l_Movement = l_Movement * l_MovementSpeed * Time.deltaTime;
         
-        if (Input.GetMouseButtonDown(0) && CanPunch())
+        if (Input.GetMouseButtonDown(0) && CanPunch() && m_ActiveInput)
         {
             if (MustRestartComboPunch())
             {
@@ -152,7 +154,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         }
         m_characterController.Move(l_Movement);
 
-        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton < 2f) //&& m_AirTime < 0.1f)
+        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton < 2f && m_ActiveInput) //&& m_AirTime < 0.1f)
         {
             if(!m_doubleJump && m_CurrentJump == TJumpType.Jump)
             {
@@ -199,7 +201,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             }*/
         }
 
-        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f)
+        if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f && m_ActiveInput)
         {
             m_VerticalSpeed = m_JumpSpeedLong;
             m_Animator.SetBool("LongJump", true);
