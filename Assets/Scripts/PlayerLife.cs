@@ -11,7 +11,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     public static PlayerLife instance;
     [Header("PlayerLife Parameters")]
     private readonly int maxLife = 8;
-    private readonly int m_TotalLifes = 3;
+    private int m_TotalLifes = 3;
     public float currentLife;
     public KeyCode damagePlayer;
     public Vector3 CheckpointPosition;
@@ -42,16 +42,21 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         m_TotalLifesText.text = m_TotalLifes.ToString();
         if(currentLife <= 0)
         {
+            
             currentLife = 0;
-            GameOver.SetActive(true);
             CameraController.instance.m_AngleLocked = true;
             CameraController.instance.m_MouseLocked = true;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
-            UI.SetActive(false);
+            MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die", true);
             m_IsDead = true;
-            MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die",true);
+            if (uiManager.instance.isOutsideScreen == true)
+            {
+                uiManager.instance.m_AnimationUI.Play("HealthBarDown");
+                uiManager.instance.isOutsideScreen = false;
+            }
+            StartCoroutine(Diee());
         }
 
         if (uiManager.instance.isOutsideScreen == false)
@@ -121,6 +126,13 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         }
     }
 
+    private IEnumerator Diee()
+    {
+        yield return new WaitForSeconds(3f);
+        UI.SetActive(false);
+        GameOver.SetActive(true);
+    }
+
     private IEnumerator Respawn()
     {
         transform.position = CheckpointPosition;
@@ -140,6 +152,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
 
     public void RestartGame()
     {
+        m_TotalLifes--;
         GameOver.SetActive(false);
         UI.SetActive(true);
         CameraController.instance.m_AngleLocked = false;
@@ -155,6 +168,10 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
 
     public void GameRestart()
     {
-        GameController.GetGameController().RestartGame();
+        if(m_TotalLifes > 0)
+        {
+            GameController.GetGameController().RestartGame();
+        }
+        
     }
 }

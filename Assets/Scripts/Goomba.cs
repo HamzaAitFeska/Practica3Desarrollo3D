@@ -31,10 +31,12 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     public float m_EyesPosition = 1.0f;
     public float m_PlayerEyesPosition = 1.0f;
     public float RangeToShootPlayer = 5f;
+    Animator m_Animator;
     private void Start()
     {
         GameController.GetGameController().AddRestartGameElement(this);
         m_NavMasAgent = GetComponent<NavMeshAgent>();
+        m_Animator = GetComponent<Animator>();
         SetIdleState();
     }
 
@@ -83,6 +85,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         m_State = TSTATE.ALERT;
         m_NavMasAgent.destination = transform.position;
         m_CurrentRotationOnAlertedState = 0;
+        m_Animator.SetBool("Alert", true);
         
     }
     void SetChaseState()
