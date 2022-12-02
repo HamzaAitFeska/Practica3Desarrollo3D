@@ -115,15 +115,16 @@ public class CameraController : MonoBehaviour
         if (transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == 0.0f && l_MouseY == 0.0f && !MarioPlayerController.instance.m_playerIsMoving)
         {
             m_TimeToComeback += Time.deltaTime;
-            if (m_TimeToComeback > 5)
+            if (m_TimeToComeback > 3)
             {
 
                 m_Yaw = Mathf.Lerp(m_Yaw,m_LookAtTransform.rotation.eulerAngles.y,m_BetterCameraTransition);
                 m_Pitch = Mathf.Lerp(m_Pitch,m_StartPitch,m_BetterCameraTransition);
+                
 
             }
         }
-        else if (m_TimeToComeback != 0)
+        else if (m_TimeToComeback != 0 && l_MouseX != 0.0f && l_MouseY != 0.0f)
         {
             m_TimeToComeback = 0;
         }

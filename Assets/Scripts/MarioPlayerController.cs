@@ -11,7 +11,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
     public static MarioPlayerController instance;
-    public bool m_playerIsMoving = false;
+    public bool m_playerIsMoving;
     public bool m_ActiveInput;
     Vector3 StartPosition;
     Quaternion StartRotation;
@@ -57,6 +57,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     void Start()
     {
+        m_playerIsMoving = false;
         m_ActiveInput = true;
         m_ComboJumpCurrentTime = -m_ComboJumpTime;
         m_ComboPunchCurrentTime =-m_ComboPunchTime;
