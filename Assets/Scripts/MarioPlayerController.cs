@@ -157,11 +157,10 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 
         if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton < 2f && m_ActiveInput) //&& m_AirTime < 0.1f)
         {
-            if(!m_doubleJump && m_CurrentJump == TJumpType.Jump)
+            if(MustRestartComboJump())
             {
                 m_VerticalSpeed = m_JumpSpeed;
                 SetComboJump(TJumpType.Jump);
-                m_doubleJump = true;
                 l_HasMoved = true;
             }
             else
@@ -201,7 +200,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
             }*/
         }
-
+        Debug.Log(m_OnGround);
         if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f && m_ActiveInput)
         {
             m_VerticalSpeed = m_JumpSpeedLong;
@@ -227,7 +226,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 l_HasMoved = true;
             }*/
 
-            m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
+        m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
         l_Movement.y = m_VerticalSpeed * Time.deltaTime;
 
         CollisionFlags l_CollisionFlags = m_characterController.Move(l_Movement);
@@ -249,9 +248,9 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         else
         {
             m_AirTime += Time.deltaTime;
-            m_OnGround = false;
+            //m_OnGround = false;
         }
-
+        
         if(m_VerticalSpeed < 0)
         {
             m_Animator.SetBool("Falling", true);
@@ -260,8 +259,9 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 
         if(m_VerticalSpeed > 0)
         {
-            //m_Animator.SetBool("Falling", false);
+            m_Animator.SetBool("Falling", false);
             l_HasMoved = true;
+            m_OnGround = false;
         }
         m_playerIsMoving = l_HasMoved;
         
@@ -313,6 +313,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         {
             AttachToElevator(other);
         }
+
     }
     private void OnTriggerStay(Collider other)
     {
@@ -434,11 +435,12 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     void SetComboJump(TJumpType JumpType)
     {
         m_CurrentJump = JumpType;
-        m_ComboPunchCurrentTime = Time.time;
+        m_ComboJumpCurrentTime = Time.time;
         m_IsPuchEnable = true;
         if (m_CurrentJump == TJumpType.Jump)
         {
             m_Animator.SetBool("Jump",true);
+            m_Animator.SetBool("Jump3", false);
         }
         else if (m_CurrentJump == TJumpType.Double_Jump)
         {
