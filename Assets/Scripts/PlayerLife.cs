@@ -24,11 +24,15 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     [Header("GameOver")]
     public GameObject GameOver;
     public GameObject UI;
+    public GameObject ButtonRespawn;
+    public float m_TimeToAppear;
+    public bool m_HasAppeared;
     
     void Start()
     {
         instance = this;
         currentLife = maxLife;
+        m_HasAppeared = false;
         m_IsCreated = false;
         m_IsDead = false;
         m_PlayedOnce = false;
@@ -36,13 +40,18 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         GameController.GetGameController().AddRestartGameElement(this);
     }
 
+
     // Update is called once per frame
     void Update()
     {
         m_TotalLifesText.text = m_TotalLifes.ToString();
+        if(m_TotalLifes <= 0)
+        {
+            ButtonRespawn.SetActive(false);
+        }
         if(currentLife <= 0)
         {
-            
+            m_TimeToAppear += Time.deltaTime;
             currentLife = 0;
             CameraController.instance.m_AngleLocked = true;
             CameraController.instance.m_MouseLocked = true;
@@ -56,7 +65,14 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
                 uiManager.instance.m_AnimationUI.Play("HealthBarDown");
                 uiManager.instance.isOutsideScreen = false;
             }
-            StartCoroutine(Diee());
+            if(!m_HasAppeared && m_TimeToAppear >= 3f)
+            {
+                UI.SetActive(false);
+                GameOver.SetActive(true);
+                m_TimeToAppear = 0;
+                m_HasAppeared = true;
+            }
+            
         }
 
         if (uiManager.instance.isOutsideScreen == false)
@@ -75,7 +91,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         {
             DamagePlayer();
         }
-
+        
               
     }
 
@@ -131,6 +147,13 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         yield return new WaitForSeconds(3f);
         UI.SetActive(false);
         GameOver.SetActive(true);
+        if(currentLife > 0)
+        {
+            GameOver.SetActive(false);
+            ButtonRespawn.SetActive(false);
+            UI.SetActive(true);
+        }
+        
     }
 
     private IEnumerator Respawn()
@@ -152,8 +175,12 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
 
     public void RestartGame()
     {
+        m_HasAppeared = false;
+        MarioPlayerController.instance.m_ActiveInput = false;
+        currentLife = maxLife;
         m_TotalLifes--;
         GameOver.SetActive(false);
+        ButtonRespawn.SetActive(false);
         UI.SetActive(true);
         CameraController.instance.m_AngleLocked = false;
         CameraController.instance.m_MouseLocked = false;
@@ -162,16 +189,42 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         m_IsCreated = true;
         m_IsDead = false;
         m_PlayedOnce = false;
-        currentLife = maxLife;
         MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die", false);
+        if (uiManager.instance.isOutsideScreen == true)
+        {
+            uiManager.instance.m_AnimationUI.Play("HealthBarDown");
+            uiManager.instance.isOutsideScreen = false;
+        }
     }
 
     public void GameRestart()
     {
         if(m_TotalLifes > 0)
         {
-            GameController.GetGameController().RestartGame();
+          GameController.GetGameController().RestartGame();
+
         }
-        
+    }
+
+    public void TryAgain()
+    {
+        if(m_TotalLifes <=0)
+        {
+          m_TotalLifes = 4;
+        }
+        else if(m_TotalLifes == 1)
+        {
+            m_TotalLifes = 3;
+        }
+        else if(m_TotalLifes == 2)
+        {
+            m_TotalLifes = 2;
+        }
+        else if(m_TotalLifes == 3)
+        {
+            m_TotalLifes = 1;
+        }
+        MarioPlayerController.instance.m_CurrentCheckPoint = null;
+        GameController.GetGameController().RestartGame();
     }
 }

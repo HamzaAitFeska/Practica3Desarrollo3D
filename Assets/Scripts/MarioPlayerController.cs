@@ -469,5 +469,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             transform.rotation = PlayerLife.instance.CheckpointRotation;
         }
         m_characterController.enabled = true;
+        
     }
 }
