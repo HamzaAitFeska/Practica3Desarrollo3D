@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Animation: {fileID: 786357061370197150}
-  m_CoinItemIddleClip: {fileID: 7400000, guid: 73cb9da763afd794a9602b3b9e4b4873, type: 2}
+  m_CoinItemIdleClip: {fileID: 7400000, guid: 73cb9da763afd794a9602b3b9e4b4873, type: 2}
   m_CoinItemPickedUpClip: {fileID: 7400000, guid: 058a002b9852a50419b6aed08ee79c32, type: 2}
   m_CoinItemPickup: {fileID: 786357061960282966}
 --- !u!136 &786357061370197151

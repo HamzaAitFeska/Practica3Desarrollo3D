@@ -4,7 +4,7 @@ using UnityEngine;
 public class CoinItem : MonoBehaviour
 {
     public Animation m_Animation;
-    public AnimationClip m_CoinItemIddleClip;
+    public AnimationClip m_CoinItemIdleClip;
     public AnimationClip m_CoinItemPickedUpClip;
     public AudioSource m_CoinItemPickup;
     void Start()
@@ -29,11 +29,11 @@ public class CoinItem : MonoBehaviour
     }
     void SetCoinItemIddleAnimation()
     {
-        m_Animation.CrossFadeQueued(m_CoinItemIddleClip.name);
+        m_Animation.CrossFadeQueued(m_CoinItemIdleClip.name);
     }
     void SetCoinItemPickedUpAnimation()
     {
-        m_Animation.Stop(m_CoinItemIddleClip.name);
+        m_Animation.Stop(m_CoinItemIdleClip.name);
         m_Animation.CrossFadeQueued(m_CoinItemPickedUpClip.name);
     }
 }
