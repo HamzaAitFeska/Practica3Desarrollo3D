@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    PlayerControls gamepadControls;
+    void Awake()
     {
-        
-    }
+        gamepadControls = new PlayerControls();
 
-    // Update is called once per frame
-    void Update()
+        gamepadControls.Gamplay.Jump.performed += ctx => PlayerJump();
+    }
+    void PlayerJump()
     {
-        
+        Debug.Log("JUMP");
     }
 }

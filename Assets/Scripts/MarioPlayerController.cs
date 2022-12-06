@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 {
     public enum TPunchType { RightHand, LeftHand, Kick }
