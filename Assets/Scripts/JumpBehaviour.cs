@@ -23,7 +23,7 @@ public class JumpBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
+        m_MarioPlayerController.SetIsPunchEnable(false);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -36,7 +36,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public Collider m_RightHandCollider;
     public Collider m_KickCollider;
     TPunchType m_CurrentPunch;
-    bool m_IsPuchEnable = false;
+    bool m_IsPunchEnable = false;
     [Header("JumpKill")]
     public float m_JumpKillerSpeed = 5.0f;
     public float m_MaxAngleToKillGoomba = 60.0f;
@@ -140,7 +140,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         }
         m_Animator.SetFloat("Speed", l_Speed);
         l_Movement = l_Movement * l_MovementSpeed * Time.deltaTime;
-        
         if (Input.GetMouseButtonDown(0) && CanPunch() && m_ActiveInput)
         {
             if (MustRestartComboPunch())
@@ -362,12 +361,12 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     bool CanPunch()
     {
-        return !m_IsPuchEnable;
+        return !m_IsPunchEnable;
     }
 
     public void SetIsPunchEnable(bool IsPunchEnable)
     {
-        m_IsPuchEnable = IsPunchEnable;
+        m_IsPunchEnable = IsPunchEnable;
     }
 
     bool MustRestartComboPunch()
@@ -395,7 +394,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     {
         m_CurrentPunch = PunchType;
         m_ComboPunchCurrentTime = Time.time;
-        m_IsPuchEnable = true;
+        m_IsPunchEnable = true;
         if(m_CurrentPunch == TPunchType.RightHand)
         {
             m_Animator.SetTrigger("Punch");
@@ -436,7 +435,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     {
         m_CurrentJump = JumpType;
         m_ComboJumpCurrentTime = Time.time;
-        m_IsPuchEnable = true;
+        m_IsPunchEnable = true;
         if (m_CurrentJump == TJumpType.Jump)
         {
             m_Animator.SetBool("Jump",true);
