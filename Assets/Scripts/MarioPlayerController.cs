@@ -200,7 +200,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
             }*/
         }
-        Debug.Log(m_OnGround);
+        //Debug.Log(m_OnGround);
         if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f && m_ActiveInput)
         {
             m_VerticalSpeed = m_JumpSpeedLong;
@@ -251,13 +251,13 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             //m_OnGround = false;
         }
         
-        if(m_VerticalSpeed < 0)
+        if(m_VerticalSpeed < 0 && m_AirTime > 0.1f)
         {
             m_Animator.SetBool("Falling", true);
             l_HasMoved = true;
         }
 
-        if(m_VerticalSpeed > 0)
+        if(m_VerticalSpeed > 0 && m_AirTime > 0.1f)
         {
             m_Animator.SetBool("Falling", false);
             l_HasMoved = true;

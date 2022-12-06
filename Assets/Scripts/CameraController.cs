@@ -4,7 +4,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [Header("Camera Parameters")]
-    public float m_TimeToComeback;
+    public float m_IdleTime;
     public Transform m_LookAtTransform;
     public float m_MinxDistance = 5.0f;
     public float m_MaxDistance = 15.0f;
@@ -18,6 +18,8 @@ public class CameraController : MonoBehaviour
     public float m_StartPitch;
     public float m_StartYaw;
     public float m_BetterCameraTransition = 0.15f;
+    float l_TimeToComeBack = 5.0f;
+    bool playerIsIdle = false;
     public static CameraController instance;
     [Header("Avoid Obstacles")]
     public LayerMask m_AvoidObjectsMask;
@@ -50,6 +52,13 @@ public class CameraController : MonoBehaviour
         }
     }
 #endif
+    private void Update()
+    {
+        if (playerIsIdle)
+        {
+            m_IdleTime += Time.deltaTime;
+        }
+    }
     private void LateUpdate()
     {
         
@@ -114,8 +123,8 @@ public class CameraController : MonoBehaviour
     {
         if (transform.forward != MarioPlayerController.instance.transform.forward && l_MouseX == 0.0f && l_MouseY == 0.0f && !MarioPlayerController.instance.m_playerIsMoving)
         {
-            m_TimeToComeback += Time.deltaTime;
-            if (m_TimeToComeback > 3)
+            playerIsIdle = true;
+            if (m_IdleTime > l_TimeToComeBack)
             {
 
                 m_Yaw = Mathf.Lerp(m_Yaw,m_LookAtTransform.rotation.eulerAngles.y,m_BetterCameraTransition);
@@ -124,9 +133,10 @@ public class CameraController : MonoBehaviour
 
             }
         }
-        else if (m_TimeToComeback != 0 && l_MouseX != 0.0f && l_MouseY != 0.0f)
+        else if (m_IdleTime != 0 && ((l_MouseX != 0.0f && l_MouseY != 0.0f) || MarioPlayerController.instance.m_playerIsMoving))
         {
-            m_TimeToComeback = 0;
+            playerIsIdle = false;
+            m_IdleTime = 0;
         }
     }
 }

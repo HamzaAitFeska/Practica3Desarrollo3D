@@ -32,6 +32,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     public float m_PlayerEyesPosition = 1.0f;
     public float RangeToShootPlayer = 5f;
     Animator m_Animator;
+    public AudioSource goombaDies;
     private void Start()
     {
         GameController.GetGameController().AddRestartGameElement(this);
