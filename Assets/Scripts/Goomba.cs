@@ -202,6 +202,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     public void Kill()
     {
         transform.localScale = new Vector3(1.0f, m_KillScale, 1.0f);
+        AudioController.instance.PlayOneShot(goombaDies);
         StartCoroutine(Hide());
     }
 
