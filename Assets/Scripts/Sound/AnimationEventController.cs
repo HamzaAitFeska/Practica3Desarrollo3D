@@ -22,20 +22,40 @@ public class AnimationEventController : MonoBehaviour
         footStepDirt.Play();
         footStepSmoke.Play();
     }
-    void JumpNormal()
+    void JumpNormalSound()
     {
-        AudioController.instance.PlayOneShot(AudioController.instance.jumpMario);
+        AudioController.instance.PlayOneShot(AudioController.instance.marioSingleJump[Random.Range(0, AudioController.instance.marioSingleJump.Length)]);
     }
-    void JumpDouble()
+    void JumpDoubleSound()
     {
         AudioController.instance.PlayOneShot(AudioController.instance.doubleJump);
     }
-    void JumpTriple()
+    void JumpTripleSound()
     {
-        AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
+        AudioController.instance.PlayOneShot(AudioController.instance.marioTripleJump[Random.Range(0, AudioController.instance.marioTripleJump.Length)]);
     }
     void RandomizeStepSound()
     {
         AudioController.instance.PlayOneShot(AudioController.instance.footSteps[Random.Range(0, AudioController.instance.footSteps.Length)]);
+    }
+    void PunchSingleSound()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.punchSingle);
+    }
+    void PunchDoulbeSound()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.punchDouble);
+    }
+    void KickSound()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.kick);
+    }
+    void MarioTakeDamageSound()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.marioTakeDamage);
+    }
+    void MarioDieSound()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.marioDies);
     }
 }
