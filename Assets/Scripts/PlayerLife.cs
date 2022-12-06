@@ -53,6 +53,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         {
             m_TimeToAppear += Time.deltaTime;
             currentLife = 0;
+            MarioPlayerController.instance.m_ActiveInput = false;
             CameraController.instance.m_AngleLocked = true;
             CameraController.instance.m_MouseLocked = true;
             Cursor.visible = true;
@@ -176,7 +177,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     public void RestartGame()
     {
         m_HasAppeared = false;
-        MarioPlayerController.instance.m_ActiveInput = false;
+        MarioPlayerController.instance.m_ActiveInput = true;
         currentLife = maxLife;
         m_TotalLifes--;
         GameOver.SetActive(false);
