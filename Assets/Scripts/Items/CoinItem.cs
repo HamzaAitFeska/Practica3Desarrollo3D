@@ -5,6 +5,7 @@ public class CoinItem : MonoBehaviour
 {
     public Animation m_Animation;
     public AnimationClip m_CoinItemIddleClip;
+    public AnimationClip m_CoinItemPickedUpClip;
     public AudioSource m_CoinItemPickup;
     void Start()
     {
@@ -16,12 +17,23 @@ public class CoinItem : MonoBehaviour
         {
             PlayerCoins.instance.AddCoin();
             AudioController.instance.PlayOneShot(m_CoinItemPickup);
-            Destroy(gameObject);
+            SetCoinItemPickedUpAnimation();
+            StartCoroutine(CoinPickedUp());
         }
 
+    }
+    public IEnumerator CoinPickedUp()
+    {
+        yield return new WaitForSeconds(m_CoinItemPickedUpClip.length);
+        Destroy(gameObject);
     }
     void SetCoinItemIddleAnimation()
     {
         m_Animation.CrossFadeQueued(m_CoinItemIddleClip.name);
+    }
+    void SetCoinItemPickedUpAnimation()
+    {
+        m_Animation.Stop(m_CoinItemIddleClip.name);
+        m_Animation.CrossFadeQueued(m_CoinItemPickedUpClip.name);
     }
 }

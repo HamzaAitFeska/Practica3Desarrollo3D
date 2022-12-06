@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Animation: {fileID: 786357061370197150}
   m_CoinItemIddleClip: {fileID: 7400000, guid: 73cb9da763afd794a9602b3b9e4b4873, type: 2}
+  m_CoinItemPickedUpClip: {fileID: 7400000, guid: 058a002b9852a50419b6aed08ee79c32, type: 2}
   m_CoinItemPickup: {fileID: 786357061960282966}
 --- !u!136 &786357061370197151
 CapsuleCollider:
@@ -76,6 +77,7 @@ Animation:
   m_Animation: {fileID: 7400000, guid: 73cb9da763afd794a9602b3b9e4b4873, type: 2}
   m_Animations:
   - {fileID: 7400000, guid: 73cb9da763afd794a9602b3b9e4b4873, type: 2}
+  - {fileID: 7400000, guid: 058a002b9852a50419b6aed08ee79c32, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -120,9 +122,9 @@ AudioSource:
   m_GameObject: {fileID: 786357061960282965}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  OutputAudioMixerGroup: {fileID: 24300002, guid: baf03f2be69ef754dbb78f068270c40b, type: 2}
+  m_audioClip: {fileID: 8300000, guid: c09a3833e754e104e8e502277db7f02c, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -252,11 +254,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0c401d7a13eff2e45bb0aaab5ee5e03d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0c401d7a13eff2e45bb0aaab5ee5e03d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -132
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0c401d7a13eff2e45bb0aaab5ee5e03d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

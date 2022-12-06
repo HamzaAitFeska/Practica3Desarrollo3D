@@ -22,6 +22,18 @@ public class AnimationEventController : MonoBehaviour
         footStepDirt.Play();
         footStepSmoke.Play();
     }
+    void JumpNormal()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.jumpMario);
+    }
+    void JumpDouble()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.doubleJump);
+    }
+    void JumpTriple()
+    {
+        AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
+    }
     void RandomizeStepSound()
     {
         AudioController.instance.PlayOneShot(AudioController.instance.footSteps[Random.Range(0, AudioController.instance.footSteps.Length)]);
