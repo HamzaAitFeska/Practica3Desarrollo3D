@@ -2886,7 +2886,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: baf03f2be69ef754dbb78f068270c40b, type: 2}
   m_audioClip: {fileID: 8300000, guid: b36bf668540ce5541a66dcf67c240369, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3321,7 +3321,7 @@ GameObject:
   - component: {fileID: 881459309}
   - component: {fileID: 881459312}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Column
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3339,7 +3339,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.4475505, z: 1}
   m_Children: []
   m_Father: {fileID: 898618259}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &881459309
 CapsuleCollider:
@@ -3468,7 +3468,7 @@ GameObject:
   m_Component:
   - component: {fileID: 898618259}
   m_Layer: 0
-  m_Name: Puente
+  m_Name: Bridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3485,8 +3485,8 @@ Transform:
   m_LocalPosition: {x: 17.72, y: 13.33, z: 11.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 881459308}
   - {fileID: 947031821}
+  - {fileID: 881459308}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3704,8 +3704,8 @@ GameObject:
   - component: {fileID: 947031823}
   - component: {fileID: 947031822}
   m_Layer: 3
-  m_Name: puente
-  m_TagString: Untagged
+  m_Name: Bridge
+  m_TagString: Bridge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3718,12 +3718,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947031820}
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 3.04, z: 0}
-  m_LocalScale: {x: 8.1603565, y: 0.11585699, z: 1.7361238}
+  m_LocalPosition: {x: 0, y: 3.081, z: 0}
+  m_LocalScale: {x: 8.1603565, y: -0.04, z: 1.7361238}
   m_Children:
   - {fileID: 2122553706}
   m_Father: {fileID: 898618259}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!59 &947031822
 HingeJoint:
@@ -3734,14 +3734,14 @@ HingeJoint:
   m_GameObject: {fileID: 947031820}
   m_ConnectedBody: {fileID: 881459312}
   m_ConnectedArticulationBody: {fileID: 0}
-  m_Anchor: {x: 0, y: 0.50000006, z: 0}
+  m_Anchor: {x: 0, y: 0.5, z: 0}
   m_Axis: {x: 0, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 2.140118, z: 0}
+  m_ConnectedAnchor: {x: 0, y: 2.114607, z: 0}
   m_UseSpring: 1
   m_Spring:
-    spring: 0
-    damper: 0
+    spring: 10
+    damper: 5
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -3750,8 +3750,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 1
   m_Limits:
-    min: -95.84644
-    max: 91.59243
+    min: -90
+    max: 90
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -18691,11 +18691,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.025971498
+      value: 0.025971496
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.1311
+      value: -0.13110003
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.8964257
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18703,7 +18707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: -0.352484
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18715,15 +18719,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.000000014901163
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0.000000014901163
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c0c5ddd8aaaf0648a5624fc561b3af4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
