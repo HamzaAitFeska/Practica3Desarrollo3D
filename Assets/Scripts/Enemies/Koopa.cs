@@ -35,7 +35,6 @@ public class Koopa : MonoBehaviour,IRestartGameElements
     public float m_PlayerEyesPosition = 1.0f;
     public float RangeToShootPlayer = 2f;
     Animator m_Animator;
-    public AudioSource goombaDies;
     private void Start()
     {
         m_AttackEnds = false;
@@ -250,13 +249,11 @@ public class Koopa : MonoBehaviour,IRestartGameElements
 
     public void Kill()
     {
-        AudioController.instance.PlayOneShot(goombaDies);
         gameObject.SetActive(false);
         Instantiate(Shell, transform.position, transform.rotation);
     }
     public void KillPunch()
     {
-        AudioController.instance.PlayOneShot(goombaDies);
         gameObject.SetActive(false);
     }
 

@@ -1846,7 +1846,6 @@ MonoBehaviour:
   m_EyesPosition: 2.5
   m_PlayerEyesPosition: 2
   RangeToShootPlayer: 2
-  goombaDies: {fileID: 0}
 --- !u!195 &246551123
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3692,7 +3691,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.5
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -11650,7 +11649,6 @@ MonoBehaviour:
   m_EyesPosition: 2.5
   m_PlayerEyesPosition: 2
   RangeToShootPlayer: 2
-  goombaDies: {fileID: 0}
 --- !u!195 &1246580278
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -19749,7 +19747,6 @@ MonoBehaviour:
   m_EyesPosition: 2.5
   m_PlayerEyesPosition: 2
   RangeToShootPlayer: 2
-  goombaDies: {fileID: 0}
 --- !u!54 &1576531674
 Rigidbody:
   m_ObjectHideFlags: 0
