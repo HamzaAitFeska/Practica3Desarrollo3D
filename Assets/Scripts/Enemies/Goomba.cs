@@ -254,6 +254,8 @@ public class Goomba : MonoBehaviour,IRestartGameElements
 
     public void Kill()
     {
+        Collider goombaCollider = GetComponent<Collider>();
+        goombaCollider.enabled = false;
         transform.localScale = new Vector3(1.0f, m_KillScale, 1.0f);
         AudioController.instance.PlayOneShot(goombaDies);
         StartCoroutine(Hide());
