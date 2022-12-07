@@ -13,6 +13,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public static MarioPlayerController instance;
     public bool m_playerIsMoving;
     public bool m_ActiveInput;
+    public GameObject GoRepulsion;
     Vector3 StartPosition;
     Quaternion StartRotation;
     [Header("Jump")]
@@ -170,36 +171,9 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
 
             }
             
-            /*if (m_OnGround) //&& m_AirTime < 0.1f)
-            {
-               m_VerticalSpeed = m_JumpSpeed;
-               m_Animator.SetBool("Jump", true);
-               l_HasMoved = true;
-               m_doubleJump = true;
-               AudioController.instance.PlayOneShot(AudioController.instance.jumpMario);
-
-            }
-            else if (m_doubleJump) //&& m_AirTime > 0.1f)
-            {
-                m_VerticalSpeed = m_JumpSpeed;
-                m_Animator.SetBool("Jump2", true);
-                //m_Animator.SetBool("Jump", false);
-                l_HasMoved = true;
-                m_doubleJump = false;
-                m_tripleJump = true;
-                AudioController.instance.PlayOneShot(AudioController.instance.doubleJump);
-            }
-            else if (m_tripleJump)
-            {
-                m_VerticalSpeed = m_JumpSpeed;
-                m_Animator.SetBool("Jump3", true);
-                //m_Animator.SetBool("Jump2", false);
-                l_HasMoved = true;
-                m_tripleJump = false;
-                AudioController.instance.PlayOneShot(AudioController.instance.tripleJump);
-            }*/
+            
         }
-        //Debug.Log(m_OnGround);
+        
         if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f && m_ActiveInput)
         {
             m_VerticalSpeed = m_JumpSpeedLong;
@@ -218,12 +192,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             
         }
 
-         /*if (Input.GetKeyDown(m_JumpKeyCode) && m_firstJump && m_VerticalSpeed > 0)
-         {
-                m_VerticalSpeed = m_JumpSpeed + 10;
-                m_Animator.SetBool("Jump2", true);
-                l_HasMoved = true;
-            }*/
 
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
         l_Movement.y = m_VerticalSpeed * Time.deltaTime;
@@ -295,6 +263,8 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             else
             {
                 //Hacer Repulsion entre el Goomba y el Mario 
+                transform.position = Vector3.MoveTowards(transform.position, GoRepulsion.transform.position, 1.0f);
+                hit.gameObject.GetComponent<Goomba>().GoBackWards();
                 Debug.DrawRay(hit.point, hit.normal * 3.0f, Color.blue, 5.0f);
             }
         }

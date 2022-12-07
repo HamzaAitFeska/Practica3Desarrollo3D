@@ -16,6 +16,9 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         HIT,
         DIE
     }
+    public GameObject BackWards;
+    public float m_WalkSpeed = 2.5f;
+    public float m_RunSpeed = 6.5f;
     public float m_KillTime = 0.5f;
     public float m_KillScale = 0.2f;
     public TSTATE m_State;
@@ -78,6 +81,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     {
         m_State = TSTATE.PATROL;
         m_NavMasAgent.destination = m_PatrolPoints[CurrentPatrolID].position;
+        m_NavMasAgent.speed = m_WalkSpeed;
         
     }
 
@@ -92,21 +96,22 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     void SetChaseState()
     {
         m_State = TSTATE.CHASE;
+        m_NavMasAgent.speed = m_RunSpeed;
         
     }
     private void UpdateDieState()
     {
-        throw new NotImplementedException();
+        
     }
 
     private void UpdateHitState()
     {
-        throw new NotImplementedException();
+        
     }
 
     private void UpdateAttackState()
     {
-        throw new NotImplementedException();
+        
     }
 
     private void UpdateChaseState()
@@ -119,7 +124,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         float l_RotationSpeed = m_RotationSpeed * Time.deltaTime;
         m_CurrentRotationOnAlertedState += l_RotationSpeed;
         transform.Rotate(0, l_RotationSpeed, 0);
-        if (SeePlayer() && !PlayerInRangeToShoot())
+        if (SeePlayer())
         {
             SetChaseState();
         }
@@ -154,7 +159,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
 
         if (HearsPlayer())
         {
-            SetAlertState();
+            SetChaseState();
         }
         //SetIdleDronAnimation();
     }
@@ -181,7 +186,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         Vector3 l_PlayerPosition = MarioPlayerController.instance.transform.position;
         return Vector3.Distance(l_PlayerPosition, transform.position) <= PlayerinRange && PlayerLife.instance.currentLife > 0; 
     }
-
+    
     void MoveTowardsToPlayer()
     {
         Vector3 l_PlayerPosition = MarioPlayerController.instance.transform.position;
@@ -204,6 +209,11 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         transform.localScale = new Vector3(1.0f, m_KillScale, 1.0f);
         AudioController.instance.PlayOneShot(goombaDies);
         StartCoroutine(Hide());
+    }
+
+    public void GoBackWards()
+    {
+        m_NavMasAgent.destination = Vector3.MoveTowards(transform.position, BackWards.transform.position , 1.0f);
     }
 
     public void RestartGame()
