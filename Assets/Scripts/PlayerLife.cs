@@ -11,7 +11,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     public static PlayerLife instance;
     [Header("PlayerLife Parameters")]
     private readonly int maxLife = 8;
-    private int m_TotalLifes = 3;
+    private int m_TotalLives = 3;
     public float currentLife;
     public KeyCode damagePlayer;
     public Vector3 CheckpointPosition;
@@ -28,6 +28,10 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     public float m_TimeToAppear;
     public bool m_HasAppeared;
     
+    void Awake()
+    {
+        AudioController.instance.Play(AudioController.instance.backgroundMusic);
+    }
     void Start()
     {
         instance = this;
@@ -44,38 +48,36 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     // Update is called once per frame
     void Update()
     {
-        m_TotalLifesText.text = m_TotalLifes.ToString();
-        if(m_TotalLifes <= 0)
+        m_TotalLifesText.text = m_TotalLives.ToString();
+        if(currentLife <= 0 && !m_IsDead)
         {
-            ButtonRespawn.SetActive(false);
-        }
-        if(currentLife <= 0)
-        {
-            m_TimeToAppear += Time.deltaTime;
             currentLife = 0;
+            m_TotalLives--;
+            m_IsDead = true;
+
             MarioPlayerController.instance.m_ActiveInput = false;
             CameraController.instance.m_AngleLocked = true;
             CameraController.instance.m_MouseLocked = true;
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+
+            MarioPlayerController.instance.GetComponent<Animator>().SetBool("Falling", false);
             MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
             MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die", true);
-            m_IsDead = true;
+
             if (uiManager.instance.isOutsideScreen == true)
             {
                 uiManager.instance.m_AnimationUI.Play("HealthBarDown");
                 uiManager.instance.isOutsideScreen = false;
-            }
-            if(!m_HasAppeared && m_TimeToAppear >= 3f)
+            } 
+        }
+        if (m_IsDead)
+        {
+            m_TimeToAppear += Time.deltaTime;
+            if (!m_HasAppeared && m_TimeToAppear >= 3f)
             {
-                UI.SetActive(false);
-                GameOver.SetActive(true);
-                m_TimeToAppear = 0;
+                ShowGameOverScreen(m_TotalLives);
                 m_HasAppeared = true;
             }
-            
         }
-
         if (uiManager.instance.isOutsideScreen == false)
         {
             m_TimetoComeback += Time.deltaTime;
@@ -95,16 +97,6 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         
               
     }
-
-    private void LateUpdate()
-    {
-        if (m_IsDead && !m_PlayedOnce)
-        {
-            //AudioController.instance.PlayOneShot(AudioController.instance.playerDeath);
-            m_PlayedOnce = true;
-        }
-    }
-
     public void DamagePlayer()
     {
         m_TimetoComeback = 0;
@@ -146,13 +138,11 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     private IEnumerator Diee()
     {
         yield return new WaitForSeconds(3f);
-        UI.SetActive(false);
-        GameOver.SetActive(true);
-        if(currentLife > 0)
+        
+        ShowGameOverScreen(m_TotalLives);
+        if (currentLife > 0)
         {
-            GameOver.SetActive(false);
-            ButtonRespawn.SetActive(false);
-            UI.SetActive(true);
+            HideGameOverScreen();
         }
         
     }
@@ -161,8 +151,7 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
     {
         transform.position = CheckpointPosition;
         yield return new WaitForSeconds(0.25f);
-        GameOver.SetActive(false);
-        UI.SetActive(true);
+        HideGameOverScreen();
         MarioPlayerController.instance.GetComponent<CharacterController>().enabled = false;
         CameraController.instance.m_AngleLocked = false;
         CameraController.instance.m_MouseLocked = false;
@@ -173,16 +162,34 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         m_PlayedOnce = false;
         currentLife = maxLife;
     }
-
-    public void RestartGame()
+    public void ShowGameOverScreen(int m_TotalLives)
     {
-        m_HasAppeared = false;
-        MarioPlayerController.instance.m_ActiveInput = true;
-        currentLife = maxLife;
-        m_TotalLifes--;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        ButtonRespawn.SetActive(true);
+        UI.SetActive(false);
+        GameOver.SetActive(true);
+
+        if (m_TotalLives <= 0)
+        {
+            AudioController.instance.Stop(AudioController.instance.backgroundMusic);
+            AudioController.instance.PlayOneShot(AudioController.instance.gameoverMusic);
+            ButtonRespawn.SetActive(false);
+        }
+    }
+    public void HideGameOverScreen()
+    {
         GameOver.SetActive(false);
         ButtonRespawn.SetActive(false);
         UI.SetActive(true);
+    }
+    public void RestartGame()
+    {
+        HideGameOverScreen();
+        m_HasAppeared = false;
+        MarioPlayerController.instance.m_ActiveInput = true;
+        currentLife = maxLife;
         CameraController.instance.m_AngleLocked = false;
         CameraController.instance.m_MouseLocked = false;
         Cursor.visible = false;
@@ -190,42 +197,31 @@ public class PlayerLife : MonoBehaviour, IRestartGameElements
         m_IsCreated = true;
         m_IsDead = false;
         m_PlayedOnce = false;
+        m_TimeToAppear = 0;
         MarioPlayerController.instance.GetComponent<Animator>().SetBool("Die", false);
         if (uiManager.instance.isOutsideScreen == true)
         {
             uiManager.instance.m_AnimationUI.Play("HealthBarDown");
             uiManager.instance.isOutsideScreen = false;
         }
+        CameraController.instance.m_Pitch = CameraController.instance.m_StartPitch;
+        CameraController.instance.m_Yaw = CameraController.instance.m_StartYaw;    
     }
 
     public void GameRestart()
     {
-        if(m_TotalLifes > 0)
+        if (m_TotalLives > 0)
         {
-          GameController.GetGameController().RestartGame();
-
+            GameController.GetGameController().RestartGame();
         }
     }
-
     public void TryAgain()
     {
-        if(m_TotalLifes <=0)
-        {
-          m_TotalLifes = 4;
-        }
-        else if(m_TotalLifes == 1)
-        {
-            m_TotalLifes = 3;
-        }
-        else if(m_TotalLifes == 2)
-        {
-            m_TotalLifes = 2;
-        }
-        else if(m_TotalLifes == 3)
-        {
-            m_TotalLifes = 1;
-        }
+        m_TotalLives = 3;
         MarioPlayerController.instance.m_CurrentCheckPoint = null;
         GameController.GetGameController().RestartGame();
+        AudioController.instance.Stop(AudioController.instance.gameoverMusic);
+        AudioController.instance.Stop(AudioController.instance.backgroundMusic);
+        AudioController.instance.Play(AudioController.instance.backgroundMusic);
     }
 }

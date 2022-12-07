@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
+    public Collider checkpointCollider;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -12,7 +13,7 @@ public class CheckPoint : MonoBehaviour
             PlayerLife.instance.CheckpointRotation = MarioPlayerController.instance.GetComponent<CharacterController>().transform.rotation;
             MarioPlayerController.instance.m_CurrentCheckPoint = this.GetComponent<CheckPoint>();
             AudioController.instance.PlayOneShot(AudioController.instance.checkpointReached);
-            //Destroy(gameObject);
+            checkpointCollider.enabled = false;
         }
     }
 }

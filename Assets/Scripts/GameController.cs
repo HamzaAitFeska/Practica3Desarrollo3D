@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GameController : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-
     }
 
     private void Update()
@@ -60,8 +60,4 @@ public class GameController : MonoBehaviour
         
         return m_Mario;
     }
-    /*public void NextLevel()
-    {
-        LevelLoder.instance.LoadNextlevel(2);
-    }*/
 }

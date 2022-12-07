@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 public class AudioController : MonoBehaviour
 {
     public AudioMixer ambient, effects;
-    public AudioSource madremiaCR7, buttonClick, checkpointReached, doubleJump, marioTakeDamage, marioDies, punchSingle, punchDouble, kick;
+    public AudioSource madremiaCR7, buttonClick, checkpointReached, doubleJump, marioTakeDamage, marioDies, punchSingle, punchDouble, kick, backgroundMusic, gameoverMusic;
     public AudioSource[] footSteps, marioSingleJump, marioTripleJump;
 
     public static AudioController instance;

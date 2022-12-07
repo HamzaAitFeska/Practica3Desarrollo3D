@@ -36,7 +36,7 @@ public class CameraController : MonoBehaviour
         m_MouseLocked = Cursor.lockState == CursorLockMode.Locked;
         instance = this;
         m_Pitch = m_StartPitch;
-        
+
     }
 #if UNITY_EDITOR
     void UpadteInputDebug()
