@@ -272,6 +272,14 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         m_characterController.Move(force * magnitude);
     }
 
+    public void MoveBackWardsKoopa(Koopa other)
+    {
+        var magnitude = 2.5f;
+        var force = transform.position - other.transform.position;
+        force.Normalize();
+        m_characterController.Move(force * magnitude);
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if(hit.gameObject.tag == "Bridge")
@@ -283,6 +291,22 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             if (CanKillGoomba(hit.normal))
             {
                 hit.gameObject.GetComponent<Goomba>().Kill();
+                JumpOverEnemy();
+            }
+            else
+            {
+                //Hacer Repulsion entre el Goomba y el Mario 
+                MoveBackWards(hit.gameObject.GetComponent<Goomba>());
+                hit.gameObject.GetComponent<Goomba>().GoBackWards(this);
+                PlayerLife.instance.DamagePlayer();
+                Debug.DrawRay(hit.point, hit.normal * 3.0f, Color.blue, 5.0f);
+            }
+        }
+        else if(hit.gameObject.tag == "Koopa")
+        {
+            if (CanKillKoopa(hit.normal))
+            {
+                hit.gameObject.GetComponent<Koopa>().Kill();
                 JumpOverEnemy();
             }
             else
@@ -342,6 +366,11 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             DetachElevator();
         }
 
+    }
+
+    bool CanKillKoopa(Vector3 Normal)
+    {
+        return Vector3.Dot(Normal, Vector3.up) >= Mathf.Cos(m_MaxAngleToKillGoomba * Mathf.Deg2Rad);
     }
 
     bool CanKillGoomba(Vector3 Normal)

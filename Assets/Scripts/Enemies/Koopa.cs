@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Koopa : MonoBehaviour
+public class Koopa : MonoBehaviour,IRestartGameElements
 {
     // Start is called before the first frame update
     public enum TSTATE
@@ -16,7 +16,7 @@ public class Koopa : MonoBehaviour
         DIE
     }
     public bool m_AttackEnds;
-    public GameObject BackWards;
+    public GameObject Shell;
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
     public float m_KillTime = 0.5f;
@@ -41,7 +41,7 @@ public class Koopa : MonoBehaviour
         m_AttackEnds = false;
         GameController.GetGameController().AddRestartGameElement(this);
         m_NavMasAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        m_Animator = GetComponent<Animator>();
+        m_NavMasAgent.transform.rotation = new Quaternion(-90, 0f, 0f,0f);
         SetIdleState();
     }
 
@@ -253,11 +253,10 @@ public class Koopa : MonoBehaviour
 
     public void Kill()
     {
-        transform.localScale = new Vector3(1.0f, m_KillScale, 1.0f);
         AudioController.instance.PlayOneShot(goombaDies);
-        StartCoroutine(Hide());
+        gameObject.SetActive(false);
+        Instantiate(Shell, transform.position, transform.rotation);
     }
-
     void KillPunch()
     {
         AudioController.instance.PlayOneShot(goombaDies);
@@ -274,7 +273,6 @@ public class Koopa : MonoBehaviour
 
     public void RestartGame()
     {
-        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         gameObject.SetActive(true);
     }
 
@@ -296,7 +294,7 @@ public class Koopa : MonoBehaviour
         {
             PlayerLife.instance.DamagePlayer();
             GoBackWards(other.gameObject.GetComponent<MarioPlayerController>());
-            other.gameObject.GetComponent<MarioPlayerController>().MoveBackWards(this);
+            other.gameObject.GetComponent<MarioPlayerController>().MoveBackWardsKoopa(this);
         }
     }
 
@@ -305,7 +303,7 @@ public class Koopa : MonoBehaviour
         if (hit.gameObject.tag == "Player")
         {
             GoBackWards(hit.gameObject.GetComponent<MarioPlayerController>());
-            hit.gameObject.GetComponent<MarioPlayerController>().MoveBackWards(this);
+            hit.gameObject.GetComponent<MarioPlayerController>().MoveBackWardsKoopa(this);
         }
     }
 }
