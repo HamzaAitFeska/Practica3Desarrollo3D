@@ -263,7 +263,10 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_OnGround = false;
         }
         m_playerIsMoving = l_HasMoved;
-        
+        if (!m_CurrentElevatorCollider.enabled)
+        {
+            DetachElevator();
+        }
     }
 
     private void LateUpdate()
@@ -318,10 +321,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     {
         if (other.CompareTag("Elevator"))
         {
-            if(m_CurrentElevatorCollider==other && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle)
-            {
-                DetachElevator();
-            }
             if (CanAttachtoElevator(other))
             {
                 AttachToElevator(other);
@@ -343,7 +342,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     bool CanAttachtoElevator(Collider other)
     {
-        return m_CurrentElevatorCollider == null && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle;
+        return m_CurrentElevatorCollider == null;
     }
 
 
