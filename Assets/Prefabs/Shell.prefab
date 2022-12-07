@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 407358304322970327}
   - component: {fileID: 1279378700474324943}
   - component: {fileID: 8214668510902858584}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shell
-  m_TagString: Untagged
+  m_TagString: Shell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,7 +132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a584bdf350ea8d4580eb0db9b6c2f5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Moving: 0
   m_Distance: 1
   m_Layers:
     serializedVersion: 2
@@ -169,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 752140370464758902}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RayPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

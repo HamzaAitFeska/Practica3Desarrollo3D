@@ -11,7 +11,7 @@ public class Shell : MonoBehaviour
     public  float m_Distance;
     public  LayerMask m_Layers;
     public GameObject m_RayPoint;
-    NavMeshAgent m_Agent;
+    public NavMeshAgent m_Agent;
 
     // Unity Awake
     void Awake()

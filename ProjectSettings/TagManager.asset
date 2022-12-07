@@ -12,6 +12,7 @@ TagManager:
   - ColliderMario
   - Wall
   - Koopa
+  - Shell
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - UI
   - Player
   - Elevator
-  - 
+  - AttachShell
   - 
   - 
   - 

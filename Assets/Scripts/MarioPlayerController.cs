@@ -52,6 +52,16 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_BridgeForce = 2.0f;
     [Header("Wall")]
     public bool m_AttachWall = false;
+    [Header("AttachS hell")]
+    public KeyCode m_PickObject = KeyCode.E;
+    public Transform m_AttachingPosition;
+    Rigidbody m_ObjectAttached;
+    bool m_AttachingObject = false;
+    Quaternion m_AttachingObjectStartRotation;
+    public float m_AttachingObjectSpeed = 20f;
+    public float m_MaxDistanceAttachObject = 10.0f;
+    public LayerMask m_AttachObjectMask;
+    public float m_ThrowAttachedObjectForce = 100f;
     CharacterController m_characterController;
     Animator m_Animator;
     // Start is called before the first frame update
@@ -239,6 +249,28 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             l_IdleTime += Time.deltaTime;
         }
         SpecialIdleAnimation();
+
+        if ((Input.GetKeyDown(m_PickObject)) && CanAttachObject())
+        {
+            AttachObject();
+        }
+        if (m_AttachingObject)
+        {
+            UpdateAttachObject();
+        }
+
+        if (!m_AttachingObject && m_ObjectAttached)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+               ThrowAttachedObject(m_ThrowAttachedObjectForce);
+            }
+            if ((Input.GetMouseButtonDown(1) || (Input.GetKeyDown(m_PickObject))) && !CanAttachObject())
+            {
+                ThrowAttachedObject(0.0f);
+            }
+
+        }
     }
 
     private void LateUpdate()
@@ -248,6 +280,74 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             Vector3 l_EulerRotation = transform.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(0.0f, l_EulerRotation.y, 0.0f);
         }
+    }
+
+    bool CanAttachObject()
+    {
+        return m_ObjectAttached == null;
+    }
+
+    void AttachObject()
+    {
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+        RaycastHit l_raycastHit;
+        if (Physics.Raycast(l_Ray, out l_raycastHit, m_MaxDistanceAttachObject, m_AttachObjectMask.value))
+        {
+            if (l_raycastHit.collider.tag == "Shell")
+            {
+                m_AttachingObject = true;
+                m_ObjectAttached = l_raycastHit.collider.GetComponent<Rigidbody>();
+                m_ObjectAttached.GetComponent<Shell>().m_Agent.enabled = false;
+                m_ObjectAttached.isKinematic = true;
+                m_AttachingObjectStartRotation = l_raycastHit.collider.transform.rotation;
+                //AudioController.instance.PlayOneShot(AudioController.instance.pickupObject);
+                //AudioController.instance.Play(AudioController.instance.pickupObjectLoop);
+            }
+
+        }
+    }
+
+    public void ThrowAttachedObject(float force)
+    {
+        if (m_ObjectAttached != null && m_ObjectAttached.tag == "Shell")
+        {
+            m_ObjectAttached.transform.SetParent(null);
+            m_ObjectAttached.isKinematic = false;
+            m_ObjectAttached.AddForce(transform.forward * force);
+            m_ObjectAttached.GetComponent<Shell>().m_Agent.enabled = true;
+            m_ObjectAttached = null;
+            //AudioController.instance.PlayOneShot(AudioController.instance.dropObject);
+            //AudioController.instance.Stop(AudioController.instance.pickupObjectLoop);
+            //StartCoroutine(EndShoot());
+        }
+
+        
+
+    }
+    void UpdateAttachObject()
+    {
+        Vector3 l_EulerAngles = m_AttachingPosition.rotation.eulerAngles;
+        Vector3 l_Direction = m_AttachingPosition.transform.position - m_ObjectAttached.transform.position;
+        float l_Distance = l_Direction.magnitude;
+        float l_Movement = m_AttachingObjectSpeed * Time.deltaTime;
+
+        if (l_Movement >= l_Distance)
+        {
+            m_AttachingObject = false;
+            m_ObjectAttached.transform.SetParent(m_AttachingPosition);
+            m_ObjectAttached.transform.localPosition = Vector3.zero;
+            m_ObjectAttached.transform.localRotation = Quaternion.identity;
+            m_ObjectAttached.MovePosition(m_AttachingPosition.position);
+            m_ObjectAttached.MoveRotation(Quaternion.Euler(0.0f, l_EulerAngles.y, l_EulerAngles.z));
+        }
+        else
+        {
+            l_Direction /= l_Distance;
+            m_ObjectAttached.MovePosition(m_ObjectAttached.transform.position + l_Direction * l_Movement);
+            m_ObjectAttached.MoveRotation(Quaternion.Lerp(m_AttachingObjectStartRotation, Quaternion.Euler(0.0f, l_EulerAngles.y, l_EulerAngles.z), 1.0f - Mathf.Min(l_Distance / 1.5f, 1.0f)));
+        }
+
+
     }
     void SpecialIdleAnimation()
     {
