@@ -3776,7 +3776,7 @@ GameObject:
   - component: {fileID: 705563095}
   m_Layer: 3
   m_Name: SphereLeft
-  m_TagString: Untagged
+  m_TagString: ColliderMario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4504,16 +4504,16 @@ MonoBehaviour:
   - {fileID: 1580423834}
   - {fileID: 1579061006}
   - {fileID: 1172108513}
-  PlayerinRange: 2
-  m_ShightMax: 10
-  m_VisualConeAngle: 60
+  PlayerinRange: 10
+  m_ShightMax: 20
+  m_VisualConeAngle: 80
   m_ShightLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_CurrentRotationOnAlertedState: 0
   m_RotationSpeed: 150
-  m_EyesPosition: 1
-  m_PlayerEyesPosition: 1
+  m_EyesPosition: 2
+  m_PlayerEyesPosition: 1.5
   RangeToShootPlayer: 5
   goombaDies: {fileID: 711087258}
 --- !u!143 &871975100
@@ -4563,7 +4563,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!195 &871975103
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6323,7 +6323,7 @@ GameObject:
   - component: {fileID: 1121332597}
   m_Layer: 3
   m_Name: SphereKick
-  m_TagString: Untagged
+  m_TagString: ColliderMario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7226,7 +7226,7 @@ GameObject:
   - component: {fileID: 1197545681}
   m_Layer: 3
   m_Name: SphereRight
-  m_TagString: Untagged
+  m_TagString: ColliderMario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

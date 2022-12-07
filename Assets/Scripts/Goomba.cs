@@ -16,6 +16,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         HIT,
         DIE
     }
+    public bool m_AttackEnds;
     public GameObject BackWards;
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
@@ -33,11 +34,12 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     public float m_RotationSpeed = 150f;
     public float m_EyesPosition = 1.0f;
     public float m_PlayerEyesPosition = 1.0f;
-    public float RangeToShootPlayer = 5f;
+    public float RangeToShootPlayer = 2f;
     Animator m_Animator;
     public AudioSource goombaDies;
     private void Start()
     {
+        m_AttackEnds = false;
         GameController.GetGameController().AddRestartGameElement(this);
         m_NavMasAgent = GetComponent<NavMeshAgent>();
         m_Animator = GetComponent<Animator>();
@@ -82,7 +84,9 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         m_State = TSTATE.PATROL;
         m_NavMasAgent.destination = m_PatrolPoints[CurrentPatrolID].position;
         m_NavMasAgent.speed = m_WalkSpeed;
-        
+        m_Animator.SetBool("Alert", false);
+        m_Animator.SetBool("Chase", false);
+
     }
 
     void SetAlertState()
@@ -91,13 +95,33 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         m_NavMasAgent.destination = transform.position;
         m_CurrentRotationOnAlertedState = 0;
         m_Animator.SetBool("Alert", true);
-        
+        m_Animator.SetBool("Chase", false);
+
     }
     void SetChaseState()
     {
         m_State = TSTATE.CHASE;
         m_NavMasAgent.speed = m_RunSpeed;
+        m_Animator.SetBool("Chase", true);
+        m_Animator.SetBool("Alert", false);
+    }
+
+    void SetAttackState()
+    {
+        m_AttackEnds = true;
+        m_State = TSTATE.ATTACK;
+        if (m_AttackEnds)
+        {
+           
+            
+        }
         
+    }
+
+    private IEnumerator EndAttack()
+    {
+        yield return new WaitForSeconds(2f);
+        m_AttackEnds = false;
     }
     private void UpdateDieState()
     {
@@ -111,12 +135,24 @@ public class Goomba : MonoBehaviour,IRestartGameElements
 
     private void UpdateAttackState()
     {
-        
+        SetAttackState();
+        if (!PlayerInRangeToShoot())
+        {
+            SetChaseState();
+        }
     }
 
     private void UpdateChaseState()
     {
         MoveTowardsToPlayer();
+        if (PlayerInRangeToShoot())
+        {
+            SetAttackState();
+        }
+        /*if (!SeePlayer())
+        {
+            SetAlertState();
+        }*/
     }
 
     private void UpdateAlertState()
@@ -127,6 +163,13 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         if (SeePlayer())
         {
             SetChaseState();
+            m_Animator.SetBool("Alert", false);
+            
+        }
+
+        if(m_CurrentRotationOnAlertedState >= 360 && !SeePlayer())
+        {
+            SetPatrolState();
         }
     }
 
@@ -157,7 +200,12 @@ public class Goomba : MonoBehaviour,IRestartGameElements
             MoveNextPatrolPoint();
         }
 
-        if (HearsPlayer())
+        if (HearsPlayer() && !SeePlayer())
+        {
+            SetAlertState();
+        }
+
+        if(HearsPlayer() && SeePlayer())
         {
             SetChaseState();
         }
@@ -211,9 +259,18 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         StartCoroutine(Hide());
     }
 
-    public void GoBackWards()
+    void KillPunch()
     {
-        m_NavMasAgent.destination = Vector3.MoveTowards(transform.position, BackWards.transform.position , 1.0f);
+        AudioController.instance.PlayOneShot(goombaDies);
+        gameObject.SetActive(false);
+    }
+
+    public void GoBackWards(MarioPlayerController other)
+    {
+        var magnitude = 2.5f;
+        var force = transform.position - other.transform.position;
+        force.Normalize();
+        gameObject.GetComponent<CharacterController>().Move(force * magnitude);
     }
 
     public void RestartGame()
@@ -227,5 +284,30 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         yield return new WaitForSeconds(m_KillTime);
         gameObject.SetActive(false);
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        if (other.CompareTag("ColliderMario"))
+        {
+            KillPunch();
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            PlayerLife.instance.DamagePlayer();
+            GoBackWards(other.gameObject.GetComponent<MarioPlayerController>());
+            other.gameObject.GetComponent<MarioPlayerController>().MoveBackWards(this);
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "Player")
+        {
+            GoBackWards(hit.gameObject.GetComponent<MarioPlayerController>());
+            hit.gameObject.GetComponent<MarioPlayerController>().MoveBackWards(this);
+        }
+    }
+
 }

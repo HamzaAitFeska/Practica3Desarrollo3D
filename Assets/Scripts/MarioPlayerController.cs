@@ -262,6 +262,14 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         m_VerticalSpeed = m_JumpKillerSpeed;
     }
 
+    public void MoveBackWards(Goomba other)
+    {
+        var magnitude = 2.5f;
+        var force = transform.position - other.transform.position;
+        force.Normalize();
+        m_characterController.Move(force * magnitude);
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if(hit.gameObject.tag == "Bridge")
@@ -278,8 +286,9 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             else
             {
                 //Hacer Repulsion entre el Goomba y el Mario 
-                transform.position = Vector3.MoveTowards(transform.position, GoRepulsion.transform.position, 1.0f);
-                hit.gameObject.GetComponent<Goomba>().GoBackWards();
+                MoveBackWards(hit.gameObject.GetComponent<Goomba>());
+                hit.gameObject.GetComponent<Goomba>().GoBackWards(this);
+                PlayerLife.instance.DamagePlayer();
                 Debug.DrawRay(hit.point, hit.normal * 3.0f, Color.blue, 5.0f);
             }
         }
