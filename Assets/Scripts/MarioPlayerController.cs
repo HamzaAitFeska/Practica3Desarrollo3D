@@ -198,11 +198,11 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_CurrentTimeButton = Time.time;
         }
 
-        if (Input.GetKeyUp(m_JumpKeyCode))
+        /*if (Input.GetKeyUp(m_JumpKeyCode))
         {
             Debug.Log((Time.time - m_CurrentTimeButton).ToString("00:00.00"));
             
-        }
+        }*/
 
 
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
