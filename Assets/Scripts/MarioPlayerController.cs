@@ -50,6 +50,8 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     Collider m_CurrentElevatorCollider = null;
     [Header("Bridge")]
     public float m_BridgeForce = 2.0f;
+    [Header("Wall")]
+    public bool m_AttachWall = false;
     CharacterController m_characterController;
     Animator m_Animator;
     // Start is called before the first frame update
@@ -306,6 +308,17 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             AttachToElevator(other);
         }
 
+        if (other.CompareTag("Wall"))
+        {
+            AttachToWall(other);
+            if (Input.GetKeyUp(m_JumpKeyCode) && m_AttachWall)
+            {
+                m_VerticalSpeed = m_JumpSpeed;
+                transform.forward = other.transform.forward;
+                m_ActiveInput = true;
+                transform.SetParent(null);
+            }
+        }
     }
     private void OnTriggerStay(Collider other)
     {
@@ -340,7 +353,12 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         return m_CurrentElevatorCollider == null && Vector3.Dot(other.transform.up, Vector3.up) <= m_ElevatorDotAngle;
     }
 
-
+    void AttachToWall(Collider other)
+    {
+        transform.SetParent(other.transform);
+        m_ActiveInput = false;
+        m_AttachWall = true;
+    }
 
     void AttachToElevator(Collider other)
     {

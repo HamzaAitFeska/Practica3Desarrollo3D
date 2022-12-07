@@ -10,6 +10,7 @@ TagManager:
   - Goomba
   - Ground
   - ColliderMario
+  - Wall
   layers:
   - Default
   - TransparentFX
