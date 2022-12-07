@@ -251,9 +251,11 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     {
         if (l_IdleTime > m_TimeToIdleAnimation)
         {
-            Debug.Log("SET IDLE HERE");
+            m_Animator.SetTrigger("IdleExtra");
             l_IdleTime = 0;       
         }
+
+        
     }
     void JumpOverEnemy()
     {
