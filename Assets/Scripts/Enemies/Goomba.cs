@@ -259,7 +259,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         StartCoroutine(Hide());
     }
 
-    void KillPunch()
+    public void KillPunch()
     {
         AudioController.instance.PlayOneShot(goombaDies);
         gameObject.SetActive(false);

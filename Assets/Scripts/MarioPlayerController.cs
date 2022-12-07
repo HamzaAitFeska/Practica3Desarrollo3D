@@ -312,7 +312,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             else
             {
                 //Hacer Repulsion entre el Goomba y el Mario 
-                MoveBackWards(hit.gameObject.GetComponent<Goomba>());
+                MoveBackWardsKoopa(hit.gameObject.GetComponent<Koopa>());
                 hit.gameObject.GetComponent<Goomba>().GoBackWards(this);
                 PlayerLife.instance.DamagePlayer();
                 Debug.DrawRay(hit.point, hit.normal * 3.0f, Color.blue, 5.0f);

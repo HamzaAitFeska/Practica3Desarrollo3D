@@ -6,18 +6,12 @@ using UnityEngine.AI;
 public class Shell : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField, Header("Control:")]
+    [Header("Control:")]
     private bool m_Moving;
-    [SerializeField]
-    private float m_Distance;
-    [SerializeField]
-    private LayerMask m_Layers;
-
-    [SerializeField]
-    private GameObject m_RayPoint;
-
-    // Nav Mesh Agent
-    private NavMeshAgent m_Agent;
+    public  float m_Distance;
+    public  LayerMask m_Layers;
+    public GameObject m_RayPoint;
+    NavMeshAgent m_Agent;
 
     // Unity Awake
     void Awake()
@@ -34,29 +28,26 @@ public class Shell : MonoBehaviour
     // Unity Update
     void Update()
     {
-        // Si no estamos "Activos" no hacmeos nada del movimiento
         if (!m_Moving)
             return;
 
 
-        // Control de rotación
-        // Raycast frontal, para comprobar paredes y movidas así
         if (Physics.Raycast(new Ray(m_RayPoint.transform.position, this.transform.forward), m_Distance / 2.5f, m_Layers))
         {
             RotateShell();
         }
-        // Raycast inferior, comprueba que no vayamos a precipitarnos
+        
         if (!Physics.Raycast(new Ray(m_RayPoint.transform.position, -this.transform.up), m_Distance, m_Layers))
         {
             RotateShell();
         }
 
-        // Movimiento
+        
         m_Agent.destination = m_RayPoint.transform.position;
 
     }
 
-    // Método para rotar la shell
+    
     private void RotateShell()
     {
         m_Agent.enabled = false;
@@ -68,17 +59,16 @@ public class Shell : MonoBehaviour
 
     
 
-    // OnTriggerEnter
+    
     private void OnTriggerEnter(Collider other)
     {
-        // Coll enemy
-        if (other.tag == "Enemy")
+        
+        if (other.CompareTag("Goomba"))
         {
-            
+            other.GetComponent<Goomba>().KillPunch();
             m_Moving = true;
         }
-        // Col Player
-        else if (other.tag == "Player")
+        else if (other.CompareTag("Player"))
         {
             if (m_Moving)
             {
@@ -92,6 +82,11 @@ public class Shell : MonoBehaviour
                 m_Agent.enabled = true;
             }
 
+        }
+        else if (other.CompareTag("Koopa"))
+        {
+            other.GetComponent<Koopa>().KillPunch();
+            m_Moving = true;
         }
     }
 }

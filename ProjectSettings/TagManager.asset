@@ -11,6 +11,7 @@ TagManager:
   - Ground
   - ColliderMario
   - Wall
+  - Koopa
   layers:
   - Default
   - TransparentFX

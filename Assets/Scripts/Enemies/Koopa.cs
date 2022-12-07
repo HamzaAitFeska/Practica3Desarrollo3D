@@ -83,8 +83,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         m_State = TSTATE.PATROL;
         m_NavMasAgent.destination = m_PatrolPoints[CurrentPatrolID].position;
         m_NavMasAgent.speed = m_WalkSpeed;
-        m_Animator.SetBool("Alert", false);
-        m_Animator.SetBool("Chase", false);
+        
 
     }
 
@@ -93,16 +92,14 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         m_State = TSTATE.ALERT;
         m_NavMasAgent.destination = transform.position;
         m_CurrentRotationOnAlertedState = 0;
-        m_Animator.SetBool("Alert", true);
-        m_Animator.SetBool("Chase", false);
+        
 
     }
     void SetChaseState()
     {
         m_State = TSTATE.CHASE;
         m_NavMasAgent.speed = m_RunSpeed;
-        m_Animator.SetBool("Chase", true);
-        m_Animator.SetBool("Alert", false);
+        
     }
 
     void SetAttackState()
@@ -162,7 +159,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         if (SeePlayer())
         {
             SetChaseState();
-            m_Animator.SetBool("Alert", false);
+            
 
         }
 
@@ -257,7 +254,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         gameObject.SetActive(false);
         Instantiate(Shell, transform.position, transform.rotation);
     }
-    void KillPunch()
+    public void KillPunch()
     {
         AudioController.instance.PlayOneShot(goombaDies);
         gameObject.SetActive(false);
