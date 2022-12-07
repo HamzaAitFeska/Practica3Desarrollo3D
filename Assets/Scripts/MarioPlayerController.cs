@@ -10,6 +10,8 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     public float m_LerpRotation = 0.85f;
     public float m_WalkSpeed = 2.5f;
     public float m_RunSpeed = 6.5f;
+    public float m_TimeToIdleAnimation = 10.0f;
+    float l_IdleTime = 0.0f;
     public static MarioPlayerController instance;
     public bool m_playerIsMoving;
     public bool m_ActiveInput;
@@ -170,8 +172,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 l_HasMoved = true;
 
             }
-            
-            
         }
         
         if (Input.GetKeyUp(m_JumpKeyCode) && m_OnGround && Time.time - m_CurrentTimeButton > 2f && m_ActiveInput)
@@ -231,6 +231,12 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_OnGround = false;
         }
         m_playerIsMoving = l_HasMoved;
+
+        if (!m_playerIsMoving)
+        {
+            l_IdleTime += Time.deltaTime;
+        }
+        SpecialIdleAnimation();
     }
 
     private void LateUpdate()
@@ -241,7 +247,14 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             transform.rotation = Quaternion.Euler(0.0f, l_EulerRotation.y, 0.0f);
         }
     }
-
+    void SpecialIdleAnimation()
+    {
+        if (l_IdleTime > m_TimeToIdleAnimation)
+        {
+            Debug.Log("SET IDLE HERE");
+            l_IdleTime = 0;       
+        }
+    }
     void JumpOverEnemy()
     {
         m_VerticalSpeed = m_JumpKillerSpeed;
