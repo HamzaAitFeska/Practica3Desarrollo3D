@@ -149,10 +149,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         {
             SetAttackState();
         }
-        /*if (!SeePlayer())
-        {
-            SetAlertState();
-        }*/
+        
     }
 
     private void UpdateAlertState()
@@ -196,7 +193,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     {
         if (PatrolTargetPosArrived())
         {
-            //IsAlerted = false;
+            
             MoveNextPatrolPoint();
         }
 
@@ -209,7 +206,7 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         {
             SetChaseState();
         }
-        //SetIdleDronAnimation();
+        
     }
 
     bool PatrolTargetPosArrived()

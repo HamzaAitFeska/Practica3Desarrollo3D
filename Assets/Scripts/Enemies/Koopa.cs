@@ -112,11 +112,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
 
     }
 
-    private IEnumerator EndAttack()
-    {
-        yield return new WaitForSeconds(2f);
-        m_AttackEnds = false;
-    }
+    
     private void UpdateDieState()
     {
 
@@ -144,10 +140,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         {
             SetAttackState();
         }
-        /*if (!SeePlayer())
-        {
-            SetAlertState();
-        }*/
+        
     }
 
     private void UpdateAlertState()
@@ -191,7 +184,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
     {
         if (PatrolTargetPosArrived())
         {
-            //IsAlerted = false;
+            
             MoveNextPatrolPoint();
         }
 
@@ -204,7 +197,7 @@ public class Koopa : MonoBehaviour,IRestartGameElements
         {
             SetChaseState();
         }
-        //SetIdleDronAnimation();
+        
     }
 
     bool PatrolTargetPosArrived()
@@ -268,12 +261,6 @@ public class Koopa : MonoBehaviour,IRestartGameElements
     public void RestartGame()
     {
         gameObject.SetActive(true);
-    }
-
-    IEnumerator Hide()
-    {
-        yield return new WaitForSeconds(m_KillTime);
-        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)

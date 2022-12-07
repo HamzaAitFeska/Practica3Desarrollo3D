@@ -19,13 +19,11 @@ public class Shell : MonoBehaviour
         m_Agent = GetComponent<NavMeshAgent>();
     }
 
-    // Unity Start
     void Start()
     {
         m_Moving = false;
     }
 
-    // Unity Update
     void Update()
     {
         if (!m_Moving)

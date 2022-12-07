@@ -198,13 +198,6 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_CurrentTimeButton = Time.time;
         }
 
-        /*if (Input.GetKeyUp(m_JumpKeyCode))
-        {
-            Debug.Log((Time.time - m_CurrentTimeButton).ToString("00:00.00"));
-            
-        }*/
-
-
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
         l_Movement.y = m_VerticalSpeed * Time.deltaTime;
 
@@ -221,13 +214,12 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_Animator.SetBool("Jump2", false);
             m_Animator.SetBool("Jump3", false);
             m_Animator.SetBool("LongJump", false);
-            //m_doubleJump = false;
             m_tripleJump = false;
         }
         else
         {
             m_AirTime += Time.deltaTime;
-            //m_OnGround = false;
+            
         }
         
         if(m_VerticalSpeed < 0 && m_AirTime > 0.1f)
@@ -408,7 +400,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             }
             else
             {
-                //Hacer Repulsion entre el Goomba y el Mario 
+                //Hacer Repulsion entre el  Koopa y el Mario 
                 MoveBackWardsKoopa(hit.gameObject.GetComponent<Koopa>());
                 hit.gameObject.GetComponent<Goomba>().GoBackWards(this);
                 PlayerLife.instance.DamagePlayer();
