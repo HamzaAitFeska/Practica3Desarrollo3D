@@ -110,10 +110,9 @@ public class Goomba : MonoBehaviour,IRestartGameElements
     {
         m_AttackEnds = true;
         m_State = TSTATE.ATTACK;
-        if (m_AttackEnds)
+        if (!HearsPlayer())
         {
-           
-            
+            SetPatrolState();
         }
         
     }
@@ -139,7 +138,8 @@ public class Goomba : MonoBehaviour,IRestartGameElements
         if (!PlayerInRangeToShoot())
         {
             SetChaseState();
-        }
+        }  
+        
     }
 
     private void UpdateChaseState()
