@@ -300,8 +300,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
                 m_ObjectAttached.GetComponent<Shell>().m_Agent.enabled = false;
                 m_ObjectAttached.isKinematic = true;
                 m_AttachingObjectStartRotation = l_raycastHit.collider.transform.rotation;
-                //AudioController.instance.PlayOneShot(AudioController.instance.pickupObject);
-                //AudioController.instance.Play(AudioController.instance.pickupObjectLoop);
+                
             }
 
         }
@@ -316,9 +315,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             m_ObjectAttached.AddForce(transform.forward * force);
             m_ObjectAttached.GetComponent<Shell>().m_Agent.enabled = true;
             m_ObjectAttached = null;
-            //AudioController.instance.PlayOneShot(AudioController.instance.dropObject);
-            //AudioController.instance.Stop(AudioController.instance.pickupObjectLoop);
-            //StartCoroutine(EndShoot());
+            
         }
 
         
