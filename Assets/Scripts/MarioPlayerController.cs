@@ -325,6 +325,10 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
             {
                 AttachToElevator(other);
             }
+            if (m_CurrentElevatorCollider == other && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle)
+            {
+                DetachElevator();
+            }
         }
     }
 
@@ -334,6 +338,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
         {
             DetachElevator();
         }
+
     }
 
     bool CanKillGoomba(Vector3 Normal)
@@ -342,7 +347,7 @@ public class MarioPlayerController : MonoBehaviour, IRestartGameElements
     }
     bool CanAttachtoElevator(Collider other)
     {
-        return m_CurrentElevatorCollider == null;
+        return m_CurrentElevatorCollider == null && Vector3.Dot(other.transform.up, Vector3.up) >= m_ElevatorDotAngle;
     }
 
 
